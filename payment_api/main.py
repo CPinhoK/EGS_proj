@@ -22,9 +22,9 @@ class wallet(BaseModel):
 class user(BaseModel):
     client_id: int
     authtoken: str
-    wallet_id: int | None
+    wallet_id: int | None = None
  
-
+# header user clientid  password token
 
 
 x=wallet(card_id=-1,cash_assoc=11111,wallet_desc="payment manger wallet",niff=1111)
@@ -67,6 +67,7 @@ async def pay(payment_details: payment_details):
     if current_token==None:
         raise HTTPException(status_code=403, detail="User not autheticated")
     current_user=userdatabase.get(current_token)
+    
     if current_user.wallet_id == None:
         raise HTTPException(status_code=403, detail="User does not have a wallet associated")
     currentwallet=walletdatabase.get(current_user.wallet_id)
@@ -155,7 +156,7 @@ async def associate_wallet(card_id: int):
 @app.get("/authentication")
 async def auth(token: str):
     currentdata.clear()
-    currentdata.extend(token)
+    currentdata.append(token)
     return {"token ": currentdata[0]}
 
 @app.get("/user")
@@ -173,5 +174,5 @@ def getwalletids(userlist):
 def getuserwithcard(walletid,userlist):
     for user in userlist:
         if user.wallet_id==walletid:
-            return user.authtoken
+            return user.authtoken 
         

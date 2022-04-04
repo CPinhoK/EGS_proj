@@ -1,1 +1,33 @@
-uvicorn main:app
+uvicorn main2:app --reload
+
+##good header
+curl -H "auth:blabla@ua.pt toktok1"  -H "auth:blabla@ua.pt toktok1" -H "Content-Type: application/json" -X GET http://127.0.0.1:8000/oldauth
+
+##good payment
+curl -H "auth:blabla@ua.pt toktok1"  -H "Content-Type: application/json" -d "{""totaltopay"": 0,""metodo_de_pagamento"": ""string"", ""source"": ""string"",""paymentid"": ""string"",""payment_dec"": ""string"",""user_id"": ""string""}" -g -X POST http://127.0.0.1:8000/payment
+
+#bad payment
+curl -H "auth:notvalid notvalid"  -H "Content-Type: application/json" -d "{""totaltopay"": 0,""metodo_de_pagamento"": ""string"", ""source"": ""string"",""paymentid"": ""string"",""payment_dec"": ""string"",""user_id"": ""string""}" -g -X POST http://127.0.0.1:8000/payment
+
+##good create wallet
+curl -H "auth:blabla@ua.pt toktok1"  -H "Content-Type: application/json" -d "{""niff"": 0,""wallet_desc"": ""string""}" -X POST http://127.0.0.1:8000/wallet
+
+##good get all wallets
+curl -H "auth:blabla@ua.pt toktok1"  -H "Content-Type: application/json" -X GET http://127.0.0.1:8000/wallet
+
+##good get a wallet
+curl -H "auth:blabla@ua.pt toktok1"  -H "Content-Type: application/json" -X GET http://127.0.0.1:8000/wallet/IgvKRx9WnHt8Wnzxq
+
+##good delete a wallet
+curl -H "auth:blabla@ua.pt toktok1"  -H "Content-Type: application/json" -X DELETE http://127.0.0.1:8000/wallet/IgvKRx9WnHt8Wnzxq
+
+##bad delete a wallet
+curl -H "auth:blabla@ua.pt toktok1"  -H "Content-Type: application/json" -X DELETE http://127.0.0.1:8000/wallet/HAh8y0bv83torMNbh
+
+##good Update wallet with niff
+curl -H "auth:wwawa@ua.pt toktok1"  -H "Content-Type: application/json" -d "{""niff"": 99,""wallet_desc"": ""blabla"",""cash_assoc"":5.1}" -X PUT http://127.0.0.1:8000/wallet/HAh8y0bv83torMNbh
+
+##good Update wallet without niff
+curl -H "auth:wwawa@ua.pt toktok1"  -H "Content-Type: application/json" -d "{""wallet_desc"": ""blabla"",""cash_assoc"":5.1}" -X PUT http://127.0.0.1:8000/wallet/HAh8y0bv83torMNbh
+
+
