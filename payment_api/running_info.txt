@@ -1,4 +1,4 @@
-uvicorn main2:app --reload
+uvicorn main:app --reload
 
 ##good header
 curl -H "auth:blabla@ua.pt toktok1"  -H "auth:blabla@ua.pt toktok1" -H "Content-Type: application/json" -X GET http://127.0.0.1:8000/oldauth
@@ -31,3 +31,16 @@ curl -H "auth:wwawa@ua.pt toktok1"  -H "Content-Type: application/json" -d "{""n
 curl -H "auth:wwawa@ua.pt toktok1"  -H "Content-Type: application/json" -d "{""wallet_desc"": ""blabla"",""cash_assoc"":5.1}" -X PUT http://127.0.0.1:8000/wallet/HAh8y0bv83torMNbh
 
 
+
+##good make a payment
+curl -H "auth:wwawa@ua.pt toktok1"  -H "Content-Type: application/json"   -d "{""incoming_paymentid"": ""string"",""totaltopay"": 2.3,""metodo_de_pagamento"": ""string"",""source"": ""string"",""payment_desc"": ""string"",""timestamp_recv"": ""string""}" -X POST http://127.0.0.1:8000/payment?wallet_id=HAh8y0bv83torMNbh
+
+
+
+##good get all payments
+curl -H "auth:wwawa@ua.pt toktok1"  -H "Content-Type: application/json" -X GET http://127.0.0.1:8000/payment
+
+curl -H "auth:blabla@ua.pt toktok1"  -H "Content-Type: application/json" -X GET http://127.0.0.1:8000/payment
+
+##good get a payment
+curl -H "auth:wwawa@ua.pt toktok1"  -H "Content-Type: application/json" -X GET http://127.0.0.1:8000/payment/KOujynKBiU78qgwbT
