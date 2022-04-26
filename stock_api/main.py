@@ -28,8 +28,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 ##Models:
 class Category(BaseModel):
     id: int
