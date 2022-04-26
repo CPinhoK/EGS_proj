@@ -1,0 +1,5 @@
+Pillow
+Django
+python3.8
+sqlite3
+
