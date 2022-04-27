@@ -1,5 +1,4 @@
 import random
-from tkinter import CURRENT
 from flask import Flask, request, jsonify, Response, render_template, redirect, request
 from flask_restful import Api
 import json
@@ -213,6 +212,42 @@ def runApi():
             return r
         except:
             return Response(status=500)
+    
+    @app.get('/token')
+    def token():
+        # try:
+            data = ''
+            username = ''
+            redirectUrl = ''
+            token = ''
+            try:
+                d = str(request.data.decode('utf-8'))
+                data = json.loads(d)
+                username = data['username']
+                redirectUrl = data['redirectUrl']
+            except:
+                return Response(status=400)
+            accData = cursor.execute('''SELECT * FROM USERS WHERE username = "%s" AND website = "%s"'''%(username, redirectUrl))
+            accounts = cursor.fetchall()
+            if len(accounts) < 1:
+                # response = {'token' : '' }
+                # r = Response(json.dumps(response), status=201, mimetype='application/json')
+                # return r
+                return Response(status=403)
+            else:
+                u, p, w, t, ts = accounts[0]
+                token = t
+            # print('Username: ' + str(username))
+            # print('Token: ' + str(token))
+            allData = cursor.execute('''SELECT * FROM USERS''')
+            allAccounts = cursor.fetchall()
+            for acc in allAccounts:
+                print(acc)
+            response = {'token' : token }
+            r = Response(json.dumps(response), status=201, mimetype='application/json')
+            return r
+        # except:
+        #     return Response(status=500)
 
     @app.put('/update')
     def update():
@@ -232,16 +267,14 @@ def runApi():
                 if (TEST): redirectUrl = ''
             except:
                 return Response(status=400)
-            accData = cursor.execute('''SELECT * FROM USERS WHERE username = "%s" AND password = "%s" AND website = "%s" AND token = "%s"'''%(username, password, redirectUrl, token))
+            accData = cursor.execute('''SELECT * FROM USERS WHERE token = "%s"'''%(token))
             accounts = cursor.fetchall()
             if len(accounts) < 1:
                 return Response(status=403)
-            token = generateRandom()
             timestamp = str(time.asctime(time.localtime(time.time())))
-            dbcon.execute('''INSERT OR REPLACE INTO USERS(username, password, website, token, timestamp)
-                                    VALUES ("%s", "%s", "%s", "%s", "%s")'''%(username, password, redirectUrl, token, timestamp))
-            # print('Username: ' + str(username))
-            # print('Token: ' + str(token))
+            dbcon.execute('''UPDATE USERS SET username = "%s", password = "%s", website = "%s", timestamp = "%s" WHERE token = "%s"'''%(username, password, redirectUrl, timestamp, token))
+            # token = generateRandom()
+            # dbcon.execute('''UPDATE USERS SET token = "%s" WHERE username = "%s" AND website = "%s"'''%(token, username, redirectUrl))
             allData = cursor.execute('''SELECT * FROM USERS''')
             allAccounts = cursor.fetchall()
             for acc in allAccounts:
