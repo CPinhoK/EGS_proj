@@ -94,12 +94,45 @@
                         <!-- tab -->
                         <div id="tab1" class="tab-pane active">
                             <div class="products-slick" data-nav="#slick-nav-1">
-                                <div class="row" id="newproducts"> 
                                     <!-- product -->
+                                    {% if latest|length == 0 %}
+                                    <!-- SECTION -->
+                                    <div class="section">
+                                        <!-- container -->
+                                        <div class="container">
+                                            <!-- row -->
+                                            <div class="row">
+                                                <h3 class="title">No available Products, please search something else</h3>
+                                            </div>
+                                            <!-- /row -->
+                                        </div>
+                                        <!-- /container -->
+                                    </div>
+                                    <!-- /SECTION -->
+                                    {% endif %}
+
+                                    {% if latest|length > 0 %}
+                                    {% for product in latest %}
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="{{product.image}}" alt="">
+                                            <div class="product-label">
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">{{product.category.name}}</p>
+                                            <h3 class="product-name"><a href="#">{{product.name}}</a></h3>
+                                            <h4 class="product-price">{{product.price}}</h4>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
                                     <!-- /product -->
                                 </div>
-
-                            </div>
                             <div id="slick-nav-1" class="products-slick-nav"></div>
                         </div>
                         <!-- /tab -->

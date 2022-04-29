@@ -198,13 +198,48 @@
                     </ul>
                 </div>
                 <!-- /store top filter -->
+                {% if products|length == 0 %}
+                <!-- SECTION -->
+                <div class="section">
+                    <!-- container -->
+                    <div class="container">
+                        <!-- row -->
+                        <div class="row">
+                            <h3 class="title">No available Products, please search something else</h3>
+                        </div>
+                        <!-- /row -->
+                    </div>
+                    <!-- /container -->
+                </div>
+                <!-- /SECTION -->
+                {% endif %}
 
                 <!-- store products -->
-                <div class="row" id="allproducts">
-                    <!-- product -->
-                    
-                    <!-- /product -->
+                <!-- product -->
+                {% if products|length > 0 %}
+                {% for product in products %}
+                <div class="col-md-4 col-xs-6">
+                    <div class="product">
+                        <div class="product-img">
+                            <img src="{{product.image}}" alt="">
+                            <div class="product-label">
+                                <span class="new">NEW</span>
+                            </div>
+                        </div>
+                        <div class="product-body">
+                            <p class="product-category">{{product.category.name}}</p>
+                            <h3 class="product-name"><a href="item">{{product.name}}</a></h3>
+                            <h4 class="product-price">{{product.price}}</h4>
+                        </div>
+                        <div class="add-to-cart">
+                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
+                {% endif %}
+                <!-- /product -->
+
                 <!-- /store products -->
             </div>
             <!-- /STORE -->
