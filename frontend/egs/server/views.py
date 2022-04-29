@@ -7,13 +7,13 @@ from .models import Product
 # Create your views here.
 def index(request):
     products = Product.objects.all().order_by('name')
-    return render(request, 'indexcopy.html', {'products': products})
+    return render(request, 'index.html', {'products': products})
 
 def categories(request):
     return render(request, 'categories.html')
 
-def search(request):
-    products = Product.objects.all().order_by('name')
+def productssearch(request):
+    products = Product.objects.filter(name='searched')
     return render(request, 'search.html', {'products': products})
 
 def item(request):

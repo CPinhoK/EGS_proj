@@ -12,6 +12,8 @@
                 <ul class="breadcrumb-tree">
                     <li><a href="#">Home</a></li>
                     <li><a href="#">All Categories</a></li>
+                    <li><a href="#">Accessories</a></li>
+                    <li class="active">Headphones (227,490 Results)</li>
                 </ul>
             </div>
         </div>
@@ -171,6 +173,25 @@
                 <!-- /aside Widget -->
             </div>
             <!-- /ASIDE -->
+            {% if products|length == 0 %}
+                <!-- SECTION -->
+                <div class="section">
+                    <!-- container -->
+                    <div class="container">
+                        <!-- row -->
+                        <div class="row">
+                            <h3 class="title">No available Products, please search something else</h3>
+                        </div>
+                        <!-- /row -->
+                    </div>
+                    <!-- /container -->
+                </div>
+                <!-- /SECTION -->
+
+            {% endif %}
+
+            {% block products %}
+            {% if products|length > 0 %}
             <!-- STORE -->
             <div id="store" class="col-md-9">
                 <!-- store top filter -->
@@ -200,10 +221,42 @@
                 <!-- /store top filter -->
 
                 <!-- store products -->
-                <div class="row" id="allproducts">
+                <div class="row">
+                    {% for product in products %}
                     <!-- product -->
-                    
+                    <div class="col-md-4 col-xs-6">
+                        <div class="product">
+                            <div class="product-img">
+                                <img src="{{product.photo}}" alt="">
+                                <div class="product-label">
+                                    <span class="sale">-30%</span>
+                                    <span class="new">NEW</span>
+                                </div>
+                            </div>
+                            <div class="product-body">
+                                <p class="product-category">{{product.category}}</p>
+                                <h3 class="product-name"><a href="#">{{product.name}}</a></h3>
+                                <h4 class="product-price">{{product.price}}<del class="product-old-price">$990.00</del></h4>
+                                <div class="product-rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product-btns">
+                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                </div>
+                            </div>
+                            <div class="add-to-cart">
+                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            </div>
+                        </div>
+                    </div>
                     <!-- /product -->
+                    {% endfor %}
                 </div>
                 <!-- /store products -->
             </div>
@@ -214,7 +267,7 @@
     <!-- /container -->
 </div>
 <!-- /SECTION -->
-
-<script type = "text/javascript" src="{% static 'js/searchstock.js' %}"></script> 
+{% endif %}
+{% endblock %}
 {% include "partial/newsletter.html" %}
 {% endblock %}

@@ -1,7 +1,5 @@
 {% load static %}
 
-{% load static %}
-
 <!-- HEADER -->
 <header>
     <!-- TOP HEADER -->
@@ -39,7 +37,7 @@
                 <!-- SEARCH BAR -->
                 <div class="col-md-7">
                     <div class="header-search">
-                        <form method="POST" action="{% url 'search' %}">
+                        <form method="get" action="{% url 'search' %}">
                             {% csrf_token %}
                             <select class="input-select" style="width: 290px;">
                                 <option value="0">All Categories</option>

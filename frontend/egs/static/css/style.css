@@ -1073,6 +1073,9 @@ textarea.input {
   opacity: 1;
   visibility: visible;
 }
+.product .newproducts {
+  display: inline;
+}
 
 /*----------------------------*\
 	Widget product

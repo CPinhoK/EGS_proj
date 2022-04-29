@@ -171,6 +171,25 @@
                 <!-- /aside Widget -->
             </div>
             <!-- /ASIDE -->
+            {% if products|length == 0 %}
+                <!-- SECTION -->
+                <div class="section">
+                    <!-- container -->
+                    <div class="container">
+                        <!-- row -->
+                        <div class="row">
+                            <h3 class="title">No available Products, please search something else</h3>
+                        </div>
+                        <!-- /row -->
+                    </div>
+                    <!-- /container -->
+                </div>
+                <!-- /SECTION -->
+
+            {% endif %}
+
+            {% block products %}
+            {% if products|length > 0 %}
             <!-- STORE -->
             <div id="store" class="col-md-9">
                 <!-- store top filter -->
@@ -216,5 +235,7 @@
 <!-- /SECTION -->
 
 <script type = "text/javascript" src="{% static 'js/searchstock.js' %}"></script> 
+{% endif %}
+{% endblock %}
 {% include "partial/newsletter.html" %}
 {% endblock %}
