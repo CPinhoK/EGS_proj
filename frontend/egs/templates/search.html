@@ -218,17 +218,14 @@
                 <!-- product -->
                 {% if products|length > 0 %}
                 {% for product in products %}
-                <div class="col-md-4 col-xs-6">
+                <div class="col-md-4 col-xs-6" style="margin-bottom: 45px;">
                     <div class="product">
                         <div class="product-img">
-                            <img src="{{product.image}}" alt="">
-                            <div class="product-label">
-                                <span class="new">NEW</span>
-                            </div>
+                            <img src="http://127.0.0.1:8000/Image/{{product.id}}" alt="">
                         </div>
                         <div class="product-body">
                             <p class="product-category">{{product.category.name}}</p>
-                            <h3 class="product-name"><a href="item">{{product.name}}</a></h3>
+                            <h3 class="product-name"><a href="{% url 'item' product.id %}" id="page_product">{{product.name}}</a></h3>
                             <h4 class="product-price">{{product.price}}</h4>
                         </div>
                         <div class="add-to-cart">
@@ -249,7 +246,5 @@
     <!-- /container -->
 </div>
 <!-- /SECTION -->
-
-<script type = "text/javascript" src="{% static 'js/searchstock.js' %}"></script> 
 {% include "partial/newsletter.html" %}
 {% endblock %}

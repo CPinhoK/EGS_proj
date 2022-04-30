@@ -115,14 +115,14 @@
                                     {% for product in latest %}
                                     <div class="product">
                                         <div class="product-img">
-                                            <img src="{{product.image}}" alt="">
+                                            <img src="http://127.0.0.1:8000/Image/{{product.id}}" alt="">
                                             <div class="product-label">
                                                 <span class="new">NEW</span>
                                             </div>
                                         </div>
                                         <div class="product-body">
                                             <p class="product-category">{{product.category.name}}</p>
-                                            <h3 class="product-name"><a href="#">{{product.name}}</a></h3>
+                                            <h3 class="product-name"><a href="{% url 'item' product.id %}">{{product.name}}</a></h3>
                                             <h4 class="product-price">{{product.price}}</h4>
                                         </div>
                                         <div class="add-to-cart">
@@ -146,6 +146,5 @@
     <!-- /container -->
 </div>
 <!-- /SECTION -->
-<script type = "text/javascript" src="{% static 'js/indexstock.js' %}"></script> 
 {% include "partial/newsletter.html" %}
 {% endblock %}
