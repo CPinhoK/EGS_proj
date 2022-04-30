@@ -1,16 +1,39 @@
-To deploy the djando project:
+# FRONTEND
 
-install requirements.txt
+This repository contais the code to execute the frontend of EGS store - Eletronic Geek Software Store, a store that manages an online shop of software.
 
-create environment: python3.8 -m venv venv
+## LOCAL DEPLOYMENT
 
-enter the environment: source venv/bin/activate
+For test purposes it is possible to run a local deployment:
 
-enter the project: cd egs
+### Requirements
+To install the necessary requirements create a virtual environment and install the necessary requirements:
 
-run migrations: python3.8 manage.py migrate
+```bash
+pyhton 3 -m venv venv
+source venv/bin/activate
+cd egs
+pip install -r requirements.txt
+```
 
-create superuser: python 3.8 manage.py createsuperuser
 
-run server: python3.8 manage.py runserver
+### Run platform
+To run the platform start the server. If the port is already in use, use another one (ex: 7000)
 
+```bash
+source venv/bin/activate
+cd egs
+python manage.py makemigrations
+python manage.py migrate
+python3.8 manage.py runserver 7000
+```
+
+### Create Super User
+To create a super user run:
+
+```bash
+python manage.py createsuperuser
+```
+
+#Auhtors:
+- Mariana Pinto
