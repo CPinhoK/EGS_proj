@@ -35,5 +35,5 @@ To create a super user run:
 python manage.py createsuperuser
 ```
 
-#Auhtors:
+# Auhtors:
 - Mariana Pinto
