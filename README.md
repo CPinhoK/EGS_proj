@@ -20,7 +20,7 @@ This folder contains the code to execute the frontend of EGS store - Eletronic G
 
 ### - [payment_service](https://github.com/CPinhoK/EGS_proj/tree/main/payment_service)
 
-This folder contains the code to execute the payment API
+This folder contains the code to execute the payment API and Payment FrontEnd
 
 #### Author: Paulo Pinho
 
