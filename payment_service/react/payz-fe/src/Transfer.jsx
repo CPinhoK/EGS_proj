@@ -4,9 +4,12 @@ import Button from './components/Button'
 import Message from './components/MessagePut';
 import { useState } from 'react';
 import Fcookie from './components/Fcookie';
-//var displayflag=false
-//const data_recv=null
-
+import { useCookies } from 'react-cookie';
+const headers = {
+  'Content-Type': 'application/json',
+  'accept': 'application/json',
+  'auth':'',
+}
 
 function Transfer() {
   const [displayflag,setdisplayflag]= useState(false);
@@ -14,6 +17,7 @@ function Transfer() {
   const [walletid,setwalletid]= useState(null);
   const [cash,setcash]= useState(null);
   const [final_url,setfinal_url]= useState('http://localhost:8000/wallet');
+  const [cookies] = useCookies(['auth'])
 
   const getData_id = (val) =>{
     setwalletid(val.target.value);
@@ -30,11 +34,16 @@ function Transfer() {
   var onClick = () =>{
     console.log('Click')
     console.log(walletid);
+    readcookiesandset();
     if(walletid!=null && walletid.length>0){
       setfinal_url('http://localhost:8000/transaction?from_wallet_id='+walletid+'&to_wallet_id='+walletid2+'&ammount='+cash);
     }
     setdisplayflag(!displayflag)
     console.log(displayflag)
+  }
+  var readcookiesandset = () =>{
+    headers.auth=cookies.auth
+    console.log(headers)
   }
   return (
     <div className="mycontainer">
@@ -50,7 +59,7 @@ function Transfer() {
         <Button text='Update Wallet'  onClick={onClick}/>
         <div>     
         {
-            displayflag ? <Message url={final_url} /> : <p></p>
+            displayflag ? <Message url={final_url} hin={headers} /> : <p></p>
         } 
         </div>
 

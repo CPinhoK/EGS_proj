@@ -3,16 +3,12 @@ import axios from 'axios';
 var JSONPrettyMon = require('react-json-pretty/dist/1337');
 var JSONPretty = require('react-json-pretty');
 
-export default function Message({url,inc_data}) {
+export default function Message({url,inc_data,hin}) {
   const[result,setResult] = useState(null);
   //const a = {url}
   //console.log(inc_data)
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'accept': 'application/json',
-    'auth':'blabla@ua.pt toktok1',
-  }
+  const headers = hin;
   var stringifyError = function(err, filter, space) {
     var plainObject = {};
     Object.getOwnPropertyNames(err).forEach(function(key) {

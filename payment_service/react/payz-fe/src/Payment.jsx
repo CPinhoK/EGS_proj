@@ -3,9 +3,15 @@ import './App.css';
 import Button from './components/Button'
 import Message from './components/MessagePost';
 import { useState } from 'react';
+import { useCookies } from 'react-cookie';
 
-
-
+//var displayflag=false
+//const data_recv=null
+const headers = {
+  'Content-Type': 'application/json',
+  'accept': 'application/json',
+  'auth':'',
+}
 
 const sapiCall = {
   incoming_paymentid:"hey",
@@ -22,6 +28,7 @@ function Payment() {
   const [apiCall,setApicall]= useState(sapiCall);
   const [walletid,setwalletid]= useState(null);
   const [final_url,setfinal_url]= useState('http://localhost:8000/payment?wallet_id=');
+  const [cookies] = useCookies(['auth'])
   setApicall(sapiCall)
   
   const getData_id = (val) =>{
@@ -31,9 +38,14 @@ function Payment() {
   var onClick = () =>{
     console.log('Click')
     console.log(apiCall)
+    readcookiesandset();
     setfinal_url(final_url+walletid)
     setdisplayflag(!displayflag)
     console.log(displayflag)
+  }
+  var readcookiesandset = () =>{
+    headers.auth=cookies.auth
+    console.log(headers)
   }
   return (
     <div className="mycontainer">
@@ -47,7 +59,7 @@ function Payment() {
         <Button text='Make payment'  onClick={onClick}/>
         <div>     
         {
-            displayflag ? <Message url={final_url} inc_data={JSON.stringify(apiCall)}/> : <p></p>
+            displayflag ? <Message url={final_url} inc_data={JSON.stringify(apiCall)} hin={headers}/> : <p></p>
         } 
         </div>
 
