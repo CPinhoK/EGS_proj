@@ -8,6 +8,7 @@ import Transfer from './Transfer';
 import GetPaymentHist from './GetPaymentHist';
 import DeleteWallet from './DeleteWallet';
 import Payment from './Payment';
+import Login from './Login';
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -32,6 +33,7 @@ ReactDOM.createRoot(rootNode).render(
       <Route path="/money-transfer" element={<Transfer />} />
       <Route path="/transaction-history" element={<GetPaymentHist />} />
       <Route path="/delete-wallet" element={<DeleteWallet />} />
+      <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoutes />}>
         <Route path="/payment" element={<Payment />} />
       </Route>

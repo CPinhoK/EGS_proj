@@ -10,7 +10,7 @@ For test purposes it is possible to run a local deployment:
 To install the necessary requirements create a virtual environment and install the necessary requirements:
 
 ```bash
-pyhton 3 -m venv venv
+pyhton -m venv venv
 source venv/bin/activate
 cd egs
 pip install -r requirements.txt

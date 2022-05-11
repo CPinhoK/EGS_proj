@@ -7,6 +7,7 @@ import { useState } from 'react';
 import Fcookie from './components/Fcookie';
 import { useCookies } from 'react-cookie';
 
+
 const sapiCall = {
   niff: null,
   wallet_desc: null,
@@ -16,7 +17,7 @@ const sapiCall = {
 const headers = {
   'Content-Type': 'application/json',
   'accept': 'application/json',
-  'auth':'blabla@ua.pt toktok1',
+  'auth':'',
 }
 
 function CreateWallet() { //CREATE WALLET
@@ -51,7 +52,7 @@ function CreateWallet() { //CREATE WALLET
   return (
     <div className="mycontainer">
         <Header/>
-        {Fcookie()}
+        <Fcookie/>
         <h3>Input Niff</h3>
         <div><input className='input' type="text" onChange={getData_niff} /> </div>
         <h3>Input Wallet description</h3>

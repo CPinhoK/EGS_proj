@@ -4,14 +4,21 @@ import Button from './components/Button'
 import Message from './components/MessageDelete';
 import { useState } from 'react';
 import Fcookie from './components/Fcookie';
+import { useCookies } from 'react-cookie';
 //var displayflag=false
 //const data_recv=null
+const headers = {
+  'Content-Type': 'application/json',
+  'accept': 'application/json',
+  'auth':'',
+}
 
 function DeleteWallet() {
   const [displayflag,setdisplayflag]= useState(false);
   const [displayalert,setdisplayalert]= useState(false);
   const [walletid,setwalletid]= useState(null);
   const [final_url,setfinal_url]= useState('http://localhost:8000/wallet');
+  const [cookies] = useCookies(['auth'])
   
   const getData_id = (val) =>{
     setwalletid(val.target.value);
@@ -30,6 +37,7 @@ function DeleteWallet() {
   }
   var onCancel = () =>{ console.log('Click Cancel'); setdisplayflag(false) }
   var onClick = () =>{
+    readcookiesandset();
     console.log('Click')
     console.log(walletid);
     if( displayflag===false ) {
@@ -38,6 +46,10 @@ function DeleteWallet() {
     }else{
         setdisplayflag(false)
     }
+  }
+  var readcookiesandset = () =>{
+    headers.auth=cookies.auth
+    console.log(headers)
   }
   return (
     <div className="mycontainer">
@@ -50,7 +62,7 @@ function DeleteWallet() {
         <Button text='Delete Wallet'  onClick={onClick}/>
         <div>     
         {
-            displayflag ? <Message url={final_url} inc_data={walletid}/> : <p></p>
+            displayflag ? <Message url={final_url} inc_data={walletid} hin={headers}/> : <p></p>
         } 
         </div>
 

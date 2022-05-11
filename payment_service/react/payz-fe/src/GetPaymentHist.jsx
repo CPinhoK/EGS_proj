@@ -4,14 +4,21 @@ import Button from './components/Button'
 import Message from './components/MessageGET';
 import { useState } from 'react';
 import Fcookie from './components/Fcookie';
+import { useCookies } from 'react-cookie';
 
 //var displayflag=false
 //const data_recv=null
+const headers = {
+  'Content-Type': 'application/json',
+  'accept': 'application/json',
+  'auth':'',
+}
 
 function GetPaymentHist() {
   const [displayflag,setdisplayflag]= useState(false);
   const [paymentid,setpayment]= useState(null);
   const [final_url,setfinal_url]= useState('http://localhost:8000/payment');
+  const [cookies] = useCookies(['auth'])
   
   const getData_id = (val) =>{
     setpayment(val.target.value);
@@ -21,6 +28,7 @@ function GetPaymentHist() {
   var onClick = () =>{
     console.log('Click')
     console.log(paymentid);
+    readcookiesandset();
     if(paymentid!=null && paymentid.length>0){
       setfinal_url('http://localhost:8000/payment/'+paymentid);
     }else if(paymentid==null||paymentid.length === 0){
@@ -29,6 +37,10 @@ function GetPaymentHist() {
     setdisplayflag(!displayflag)
     console.log(displayflag)
     console.log(final_url)
+  }
+  var readcookiesandset = () =>{
+    headers.auth=cookies.auth
+    console.log(headers)
   }
   return (
     <div className="mycontainer">
@@ -40,7 +52,7 @@ function GetPaymentHist() {
         <Button text='Get Info'  onClick={onClick}/>
         <div>     
         {
-            displayflag ? <Message url={final_url} inc_data={paymentid}/> : <p></p>
+            displayflag ? <Message url={final_url} inc_data={paymentid} hin={headers}/> : <p></p>
         } 
         </div>
 

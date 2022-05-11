@@ -4,21 +4,27 @@ import Button from './components/Button'
 import Message from './components/MessagePut';
 import { useState } from 'react';
 import Fcookie from './components/Fcookie';
-
+import { useCookies } from 'react-cookie';
 const sapiCall = {
   cash_assoc:null,
   niff: null,
   wallet_desc: null,
 };
+
 //var displayflag=false
 //const data_recv=null
-
+const headers = {
+  'Content-Type': 'application/json',
+  'accept': 'application/json',
+  'auth':'',
+}
 
 function PutWallet() {
   const [displayflag,setdisplayflag]= useState(false);
   const [apiCall,setApicall]= useState(sapiCall);
   const [walletid,setwalletid]= useState(null);
   const [final_url,setfinal_url]= useState('http://localhost:8000/wallet');
+  const [cookies] = useCookies(['auth'])
 
   const getData_id = (val) =>{
     setwalletid(val.target.value);
@@ -41,6 +47,7 @@ function PutWallet() {
   }
   var onClick = () =>{
     console.log('Click')
+    readcookiesandset();
     console.log(apiCall)
     console.log(walletid);
     if(walletid!=null && walletid.length>0){
@@ -48,6 +55,10 @@ function PutWallet() {
     }
     setdisplayflag(!displayflag)
     console.log(displayflag)
+  }
+  var readcookiesandset = () =>{
+    headers.auth=cookies.auth
+    console.log(headers)
   }
   return (
     <div className="mycontainer">
@@ -65,7 +76,7 @@ function PutWallet() {
         <Button text='Update Wallet'  onClick={onClick}/>
         <div>     
         {
-            displayflag ? <Message url={final_url} inc_data={JSON.stringify(apiCall)}/> : <p></p>
+            displayflag ? <Message url={final_url} hin={headers} inc_data={JSON.stringify(apiCall)}/> : <p></p>
         } 
         </div>
 

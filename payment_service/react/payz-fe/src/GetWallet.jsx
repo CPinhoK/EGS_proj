@@ -4,14 +4,21 @@ import Button from './components/Button'
 import Message from './components/MessageGET';
 import { useState } from 'react';
 import Fcookie from './components/Fcookie';
+import { useCookies } from 'react-cookie';
 
 //var displayflag=false
 //const data_recv=null
+const headers = {
+  'Content-Type': 'application/json',
+  'accept': 'application/json',
+  'auth':'',
+}
 
 function GetWallet() {
   const [displayflag,setdisplayflag]= useState(false);
   const [walletid,setwalletid]= useState(null);
   const [final_url,setfinal_url]= useState('http://localhost:8000/wallet');
+  const [cookies] = useCookies(['auth'])
   
   const getData_id = (val) =>{
     setwalletid(val.target.value);
@@ -27,9 +34,14 @@ function GetWallet() {
       setfinal_url('http://localhost:8000/wallet')
     }
 
+    readcookiesandset();
     setdisplayflag(!displayflag)
     console.log(displayflag)
     console.log(final_url)
+  }
+  var readcookiesandset = () =>{
+    headers.auth=cookies.auth
+    console.log(headers)
   }
   return (
     <div className="mycontainer">
@@ -41,7 +53,7 @@ function GetWallet() {
         <Button text='Get Info'  onClick={onClick}/>
         <div>     
         {
-            displayflag ? <Message url={final_url} inc_data={walletid}/> : <p></p>
+            displayflag ? <Message url={final_url} inc_data={walletid} hin={headers}/> : <p></p>
         } 
         </div>
 

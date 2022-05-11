@@ -1,16 +1,16 @@
 import React,{useState,useEffect} from 'react';
 import axios from 'axios';
-
-var JSONPrettyMon = require('react-json-pretty/dist/1337');
-var JSONPretty = require('react-json-pretty');
-
+import { useCookies } from 'react-cookie';
 
 
 export default function Message({url,inc_data,hin}) {
-  const[result,setResult] = useState(null);
+  // eslint-disable-next-line
+  const [cookies, setCookie] = useCookies(['auth'])  
+  const[result,setResult] = useState(0);
+  let user=JSON.parse(inc_data).username;
 
   //const a = {url}
-  console.log(inc_data)
+  //console.log(user)
 
   const headers = hin
   var stringifyError = function(err, filter, space) {
@@ -24,25 +24,38 @@ export default function Message({url,inc_data,hin}) {
     return JSON.stringify(plainObject, filter, space);
   };
   
-  const message = async () =>{
+  const Tmessage = async () =>{
     try{
         let res = await axios.post(url, inc_data, {
             headers: headers
           })
-	      console.log(res)
-        let result = JSON.stringify(res.data);
-        setResult(result);
-        console.log(result)
+	    //console.log(res)
+        let result = res.data;
+        console.log(result.token);
+        let tok= await result.token
+        setResult(tok);
+        //console.log(result.token)
     }catch(e){
         console.log(e)
         setResult(stringifyError(e.response, null, '\t'));
     }
+
+
+    let expires = new Date();
+    let h = 1 // 1 hour 
+    expires.setTime(expires.getTime() + (h*60*60*1000) );
+    let authi = await user+" "+ result;
+    console.log(authi)
+    setCookie('auth', authi, { path: '/',  expires, sameSite: "none",secure: true});
+
+  
   };
 
+
   useEffect(() => {
-    message({url,inc_data,hin})
-  },[])  // eslint-disable-line react-hooks/exhaustive-deps
-  return <div><JSONPretty data={result} theme={JSONPrettyMon}></JSONPretty></div>;
+    Tmessage({url,inc_data,hin})
+  },[result])  // eslint-disable-line react-hooks/exhaustive-deps
+  return <div>Logged IN</div>;
   //return <div>{result}</div>;
 };
 

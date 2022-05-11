@@ -5,6 +5,7 @@ import json
 import threading
 import time
 import sqlite3
+from flask_cors import CORS
 
 WAIT_TIME = 60
 TOKEN_SIZE = 64
@@ -38,6 +39,7 @@ for acc in allAccounts:
 
 def runApi():
     app = Flask(__name__)
+    CORS(app)
     api = Api(app)
     redirectUrl = ''
 
@@ -68,7 +70,7 @@ def runApi():
             if (TEST): redirectUrl = ''
             try:
                 for key, value in request.form.items():
-                    # print("key: {0}, value: {1}".format(key, value))
+                    print("key: {0}, value: {1}".format(key, value))
                     if key == 'username': username = value
                     if key == 'password': password = value
             except:
