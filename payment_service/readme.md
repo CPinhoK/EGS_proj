@@ -2,6 +2,9 @@
 
 ## Payment Frontend
 
+### Prerequisites
+NodeJS https://nodejs.org/en/
+
 - Install node modules
 ```bash 
 npm install --force
@@ -11,6 +14,9 @@ npm install --force
 npm start
 ```
 ## Payment Api
+
+### Prerequisites
+Python 3.10 https://www.python.org/downloads/
 
 - Install python libraries
 ```bash 
