@@ -1,4 +1,4 @@
-## Running Info
+# Running Info
 
 ## Payment Frontend
 
@@ -8,7 +8,7 @@ npm install --force
 ```
 -Run React app
 ```bash 
-npm run
+npm start
 ```
 ## Payment Api
 
