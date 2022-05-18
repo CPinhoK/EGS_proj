@@ -1,6 +1,6 @@
-##Running Info
+## Running Info
 
-##Payment Frontend
+## Payment Frontend
 
 -Install node modules
 ```bash 
@@ -10,7 +10,7 @@ npm install --force
 ```bash 
 npm run
 ```
-##Payment Api
+## Payment Api
 
 -Install python libraries
 ```bash 
