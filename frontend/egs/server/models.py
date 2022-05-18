@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 # Create your models here.
 
@@ -15,5 +16,22 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+############
+#   Order  #
+############
+class OrderItem(models.Model):
+    item = models.IntegerField(blank=False, unique=True)
+    
+    def __str__(self):
+        return self.item
 
 
+class Order(models.Model):
+    user = models.TextField(blank=False)
+    items = models.ManyToManyField(OrderItem)
+    start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField()
+    ordered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username

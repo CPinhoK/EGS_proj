@@ -17,7 +17,10 @@ def productssearch(request):
 
 def item(request, product_id):
     request.POST.get('product_id')
-    url = 'http://127.0.0.1:8000/products/' + product_id
+    url = 'http://127.0.0.1:8000/products/?id=' + product_id
     product = requests.get(url).json()
     print(product)
     return render(request, 'item.html', {'product': product})
+
+def addproduct(request):
+    return render(request, 'addproduct.html')
