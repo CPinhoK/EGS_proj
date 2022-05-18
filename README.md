@@ -29,3 +29,43 @@ This folder contains the code to execute the payment API and Payment FrontEnd
 This folder contains the code to execute the stock API
 
 #### Author: Diogo Batista
+
+## DEPLOYMENT DOCKER
+Instructions to build the docker file:
+
+- Build Docker: 
+```bash 
+sudo docker build -t [namecontainer] -f deploy/Dockerfile . 
+```
+
+- Run docker: 
+```bash 
+docker run -ti --rm [namecontainer]
+```
+
+- Run docker on a given port: 
+```bash 
+docker run -it -rm -p [port] [name container] 
+```
+
+- Stop container: 
+```bash 
+docker stop [idcontainer]
+```
+
+- See all containers: 
+```bash
+docker ps -a
+```
+
+- See containers running: 
+``` bash
+docker ps
+```
+
+- Delete a container: 
+```bash
+docker rm -f [idcontainer]
+```
+
+
