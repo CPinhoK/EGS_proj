@@ -12,9 +12,10 @@ import os
 import time
 
 ### Database configuration
-print(f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@db:3306/{os.getenv('DB_NAME')}")
+#print(f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@db:3306/{os.getenv('DB_NAME')}")
 ##DATABASE_URL = f"mysql+pymysql://test:test@db:3306/test"
 DATABASE_URL = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@127.0.0.1:3306/{os.getenv('DB_NAME')}"
+#DATABASE_URL = "sqlite:///./test.db"
 
 database = databases.Database(DATABASE_URL)
 
