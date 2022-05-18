@@ -40,32 +40,60 @@ sudo docker build -t [namecontainer] -f deploy/Dockerfile .
 
 - Run docker: 
 ```bash 
-docker run -ti --rm [namecontainer]
+sudo docker run -ti --rm [namecontainer]
 ```
 
 - Run docker on a given port: 
 ```bash 
-docker run -it -rm -p [port] [name container] 
+sudo docker run -it -rm -p [port] [name container] 
 ```
 
 - Stop container: 
 ```bash 
-docker stop [idcontainer]
+sudo docker stop [idcontainer]
 ```
 
 - See all containers: 
 ```bash
-docker ps -a
+sudo docker ps -a
 ```
 
 - See containers running: 
 ``` bash
-docker ps
+sudo docker ps
 ```
 
 - Delete a container: 
 ```bash
-docker rm -f [idcontainer]
+sudo docker rm -f [idcontainer]
 ```
 
+- Delete a image: 
+```bash
+sudo docker image rm [OPTIONS] IMAGE [IMAGE...]
+```
 
+- Prune everything
+```bash
+sudo docker system prune
+```
+
+- Docker-compose build
+```bash
+sudo docker-compose build --no-cache
+```
+
+- Docker-compose Up
+```bash
+sudo docker-compose up -d
+```
+
+- Docker-compose Down
+```bash
+sudo docker-compose down
+```
+
+- Docker-compose logs
+```bash
+sudo docker-compose logs
+```
