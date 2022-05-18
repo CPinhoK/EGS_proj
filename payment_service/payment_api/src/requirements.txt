@@ -4,3 +4,4 @@ fastapi
 databases
 sqlalchemy
 aiosqlite
+aiomysql
