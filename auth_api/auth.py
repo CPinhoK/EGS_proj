@@ -7,11 +7,65 @@ import time
 import sqlite3
 from flask_cors import CORS
 
+import mysql.connector
+from mysql.connector import Error
+
 WAIT_TIME = 60
 TOKEN_SIZE = 64
 TEST = True
 
 ### Database
+
+# def create_connection(host_name, user_name, user_password, db_name):
+#     connection = False
+#     try:
+#         connection = mysql.connector.connect(
+#             host = host_name,
+#             user = user_name,
+#             passwd = user_password,
+#             auth_plugin = 'mysql_native_password',
+#             database = db_name
+#         )
+#         print('Connection do MySQL DB Successfull')
+#     except Error as e:
+#         print(f"##### {e}")
+#     return connection
+
+# def execute(connection, query):
+#     cursor = connection.cursor()
+#     try:
+#         cursor.execute(query)
+#     except Error as e:
+#         print(f"##### {e}")
+
+# def retrieve(connection, query):
+#     cursor = connection.cursor()
+#     try:
+#         cursor.execute(query)
+#         return cursor.fetchall()
+#     except Error as e:
+#         print(f"##### {e}")
+
+# dbcon = create_connection('localhost', 'root', 'DBpassword99.', 'auth')
+
+# execute(dbcon, '''CREATE TABLE IF NOT EXISTS USERS
+#                 (username   text    NOT NULL,
+#                 password    text    NOT NULL,
+#                 website     text    NOT NULL,
+#                 token       text,
+#                 timestamp   text,
+#                 PRIMARY KEY (username, website));''')
+
+# execute(dbcon, '''INSERT INTO USERS(username, password, website)
+#                  VALUES ('admin',  'admin', '')''')
+
+# # with dbcon.cursor() as cursor:
+# #      cursor.execute('''SELECT * FROM USERS''')
+# #      result = cursor.fetchall()
+# result = retrieve(dbcon, '''SELECT * FROM USERS''')
+# if result != None:
+#     for row in result:
+#         print(row)
 
 dbcon = sqlite3.connect('auth.db', check_same_thread=False)
 
@@ -27,7 +81,7 @@ dbcon.execute  ('''CREATE TABLE IF NOT EXISTS USERS
 dbcon.commit()
 
 dbcon.execute('''INSERT OR IGNORE INTO USERS(username, password, website)
-                 VALUES ('admin',  'admin', 'test')''')
+                 VALUES ('admin',  'admin', '')''')
 
 allData = cursor.execute('''SELECT * FROM USERS''')
 allAccounts = cursor.fetchall()
@@ -74,13 +128,17 @@ def runApi():
                     if key == 'username': username = value
                     if key == 'password': password = value
             except:
-                return Response(status=400)
+                response = redirect('/signup', 400)
+                return response
+                # return Response(status=400)
             token = generateRandom()
             timestamp = str(time.asctime(time.localtime(time.time())))
             accData = cursor.execute('''SELECT * FROM USERS WHERE username = "%s" AND website = "%s"'''%(username, redirectUrl))
             accounts = cursor.fetchall()
             if len(accounts) > 0:
-                return Response(status=409)
+                response = redirect('/signup', 409)
+                return response
+                # return Response(status=409)
             dbcon.execute('''INSERT OR IGNORE INTO USERS(username, password, website, token, timestamp)
                                     VALUES ("%s", "%s", "%s", "%s", "%s")'''%(username, password, redirectUrl, token, timestamp))
             print('Username: ' + str(username))
@@ -92,9 +150,14 @@ def runApi():
                 print(acc)
             # response = {'token' : token }
             # r = Response(json.dumps(response), status=201, mimetype='application/json')
-            return redirect(redirectUrl, 201, None)
+            # return redirect(redirectUrl, 201, None)
+            response = redirect(redirectUrl, 201, None)
+            response.headers = {'token' : token}
+            return response
         except:
-            return Response(status=500)
+            response = redirect('/signup', 500)
+            return response
+            # return Response(status=500)
 
     @app.get('/login')
     def loginPage():
@@ -127,13 +190,17 @@ def runApi():
                     if key == 'username': username = value
                     if key == 'password': password = value
             except:
-                return Response(status=400)
+                response = redirect('/login', 400)
+                return response
+                # return Response(status=400)
             token = generateRandom()
             timestamp = str(time.asctime(time.localtime(time.time())))
             accData = cursor.execute('''SELECT * FROM USERS WHERE username = "%s" AND password="%s" AND website = "%s"'''%(username, password, redirectUrl))
             accounts = cursor.fetchall()
             if len(accounts) < 1:
-                return Response(status=401)
+                response = redirect('/login', 401)
+                return response
+                # return Response(status=401)
             dbcon.execute('''INSERT OR REPLACE INTO USERS(username, password, website, token, timestamp)
                                     VALUES ("%s", "%s", "%s", "%s", "%s")'''%(username, password, redirectUrl, token, timestamp))
             print('Username: ' + str(username))
@@ -145,9 +212,14 @@ def runApi():
                 print(acc)
             # response = {'token' : token }
             # r = Response(json.dumps(response), status=201, mimetype='application/json')
-            return redirect(redirectUrl, 201, None)
+            # return redirect(redirectUrl, 201, None)
+            response = redirect(redirectUrl, 201, None)
+            response.headers = {'token' : token}
+            return response
         except:
-            return Response(status=500)
+            response = redirect('/login', 500)
+            return response
+            # return Response(status=500)
 
     @app.post('/logout')
     def logout():
@@ -215,41 +287,41 @@ def runApi():
         except:
             return Response(status=500)
     
-    @app.get('/token')
-    def token():
-        # try:
-            data = ''
-            username = ''
-            redirectUrl = ''
-            token = ''
-            try:
-                d = str(request.data.decode('utf-8'))
-                data = json.loads(d)
-                username = data['username']
-                redirectUrl = data['redirectUrl']
-            except:
-                return Response(status=400)
-            accData = cursor.execute('''SELECT * FROM USERS WHERE username = "%s" AND website = "%s"'''%(username, redirectUrl))
-            accounts = cursor.fetchall()
-            if len(accounts) < 1:
-                # response = {'token' : '' }
-                # r = Response(json.dumps(response), status=201, mimetype='application/json')
-                # return r
-                return Response(status=403)
-            else:
-                u, p, w, t, ts = accounts[0]
-                token = t
-            # print('Username: ' + str(username))
-            # print('Token: ' + str(token))
-            allData = cursor.execute('''SELECT * FROM USERS''')
-            allAccounts = cursor.fetchall()
-            for acc in allAccounts:
-                print(acc)
-            response = {'token' : token }
-            r = Response(json.dumps(response), status=201, mimetype='application/json')
-            return r
-        # except:
-        #     return Response(status=500)
+    # @app.get('/token')
+    # def token():
+    #     # try:
+    #         data = ''
+    #         username = ''
+    #         redirectUrl = ''
+    #         token = ''
+    #         try:
+    #             d = str(request.data.decode('utf-8'))
+    #             data = json.loads(d)
+    #             username = data['username']
+    #             redirectUrl = data['redirectUrl']
+    #         except:
+    #             return Response(status=400)
+    #         accData = cursor.execute('''SELECT * FROM USERS WHERE username = "%s" AND website = "%s"'''%(username, redirectUrl))
+    #         accounts = cursor.fetchall()
+    #         if len(accounts) < 1:
+    #             # response = {'token' : '' }
+    #             # r = Response(json.dumps(response), status=201, mimetype='application/json')
+    #             # return r
+    #             return Response(status=403)
+    #         else:
+    #             u, p, w, t, ts = accounts[0]
+    #             token = t
+    #         # print('Username: ' + str(username))
+    #         # print('Token: ' + str(token))
+    #         allData = cursor.execute('''SELECT * FROM USERS''')
+    #         allAccounts = cursor.fetchall()
+    #         for acc in allAccounts:
+    #             print(acc)
+    #         response = {'token' : token }
+    #         r = Response(json.dumps(response), status=201, mimetype='application/json')
+    #         return r
+    #     # except:
+    #     #     return Response(status=500)
 
     @app.put('/update')
     def update():
