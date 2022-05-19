@@ -2,17 +2,18 @@ import random
 from flask import Flask, request, jsonify, Response, render_template, redirect, request
 from flask_restful import Api
 import json
-import threading
+# import threading
 import time
 import sqlite3
 from flask_cors import CORS
 
-import mysql.connector
-from mysql.connector import Error
+# import mysql.connector
+# from mysql.connector import Error
+
+TEST = True
 
 WAIT_TIME = 60
 TOKEN_SIZE = 64
-TEST = True
 
 ### Database
 
