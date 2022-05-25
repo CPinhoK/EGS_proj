@@ -114,9 +114,7 @@ kubectl apply -f deployment.yaml
 - Build docker image
 ```bash
 sudo docker build -t [image_name] .
-```
-  OR
-```bash
+
 sudo docker build -t [image_name] -f Dockerfile.app .
 ```
 
