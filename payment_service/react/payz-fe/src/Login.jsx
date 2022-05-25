@@ -1,54 +1,38 @@
-import Header from './components/Header';
-import './App.css';
-import Button from './components/Button'
-import Message from './components/MessagePOST_NR';
-import { useState } from 'react';
+import React,{useEffect} from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from "react-router-dom";
 
 
+export default function Login() {
+  // eslint-disable-next-line
+  const [cookies, setCookie] = useCookies(['auth'])  
+  const navigate = useNavigate();
 
-const sapiCall = {
-  username: null,
-  password: null,
-};
+    function  SetCoo(){
+      console.log( window.location.href)
+      let x = window.location.pathname
+      console.log(x)
+      x=x.split("_")
+      console.log(x[1])
+      let token = x[1]
+      let user = x[2]
 
-function Login() { 
-  const [displayflag,setdisplayflag]= useState(false);
-  const [apiCall,setApicall]= useState(sapiCall);
+      let expires = new Date();
+      let h = 1 // 1 hour 
+      expires.setTime(expires.getTime() + (h*60*60*1000) );
+      let authi = user+" "+ token;
+      console.log(authi)
+      setCookie('auth', authi, { path: '/',  expires, sameSite: "none",secure: true});
 
-  const getData_user = (val) =>{
-    apiCall.username=val.target.value
-    setApicall(apiCall)
-   
-  }
-  const getData_pass = (val) =>{
-    apiCall.password=val.target.value
-    setApicall(apiCall)
-  }
-  var onClick = () =>{
-    console.log('Click')
-    setdisplayflag(!displayflag)
+      useEffect(() => {
+        navigate("/", { replace: true })
+      },[]);
 
-  }
+    }
 
   return (
-    <div className="mycontainer">
-        <Header/>
-        <h3>We will validate info at http://127.0.0.1:5000/</h3>
-        <h3>Input username</h3>
-        <div><input className='input' type="text" onChange={getData_user} /> </div>
-        <h3>Input password</h3>
-        <div><input className='input' type="text" onChange={getData_pass} /> </div>
-
-        <Button text='Create Wallet'  onClick={onClick}/>
-        <div>     
-        {
-            displayflag ? <Message url='https://virtserver.swaggerhub.com/hugo.moinheiro/auth/v1/login' inc_data={JSON.stringify(apiCall)}/> : <p></p>
-        } 
-        </div>
-
+    <div>
+        {SetCoo()}   
     </div>
   );
 }
-
-export default Login;
-//<Message url='http://localhost:8000/wallet'/>

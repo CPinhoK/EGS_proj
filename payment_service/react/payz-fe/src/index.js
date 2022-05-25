@@ -33,10 +33,10 @@ ReactDOM.createRoot(rootNode).render(
       <Route path="/money-transfer" element={<Transfer />} />
       <Route path="/transaction-history" element={<GetPaymentHist />} />
       <Route path="/delete-wallet" element={<DeleteWallet />} />
-      <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoutes />}>
         <Route path="/payment" element={<Payment />} />
       </Route>
+      <Route path="/params/*" element={<Login />} />
       <Route path="*" element={<div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}} ><h1 >404 NOT FOUND</h1></div>} />
     </Routes>
   </BrowserRouter>
@@ -44,5 +44,5 @@ ReactDOM.createRoot(rootNode).render(
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals <Route path="/login" element={<Login />} />
 reportWebVitals();

@@ -1,0 +1,93 @@
+import React from "react";
+import ewallet from "./ewallet.png"
+
+
+export default class Home extends React.Component {
+  const message = async () =>{
+    try{
+          let res = await axios.get(url,{
+            headers: headers,
+            data: inc_data
+            });
+
+	      console.log(res)
+        let result = JSON.stringify(res.data);
+        setResult(result);
+        console.log(result)
+    }catch(e){
+        console.log(e)
+        setResult(stringifyError(e.response, null, '\t'));
+    }
+  };
+
+  useEffect(() => {
+    message({url,inc_data}) 
+  },[]) 
+  render() {
+    return (
+          <div className="home">
+          <div className="container">
+            <div className="row align-items-center my-5">
+    
+              <div className="col-lg-5">
+                <h1 className="font-weight-light">PAYZ</h1>
+                <p>
+                  WELCOME TO PAYZ A ONLINE WALLET SERVICE <br/><br/><br/> ON A NEW REGISTRATION 2$ WILL PUT IN YOUR WALLET :)  <br/> BE ADVISED A FLAT TAX OF 0.2$ IS APPLYED ON PAYMENT TRANSACTIONS <br/> ALL TRANSACTIONS BETWEEN WALLETS ARE FREE
+                </p>
+              </div>
+              <img className="mycontainer2" src={ewallet} alt="ewallet" />
+            </div>
+          </div>
+        </div>
+    );
+  }
+}
+
+
+
+import React from "react";
+import ewallet from "./ewallet.png"
+import { useState } from 'react';
+import {useEffect} from 'react';
+import axios from 'axios';
+
+function Home() {
+  const[result,setResult] = useState(null);
+  
+  const message = async () =>{
+    try{
+        let res = await axios.get('http://192.168.1.120:5000/login');
+	      console.log(res)
+        let result = JSON.stringify(res.data);
+        setResult(result);
+        console.log(result)
+    }catch(e){
+        console.log(e)
+    }
+  };
+
+  useEffect(() => {
+    message() 
+  },[]) 
+
+
+  return (
+    <div className="home">
+      <div className="container">
+        <div className="row align-items-center my-5">
+
+          <div className="col-lg-5">
+            <h1 className="font-weight-light">PAYZ</h1>
+            <p>
+              WELCOME TO PAYZ A ONLINE WALLET SERVICE <br/><br/><br/> ON A NEW REGISTRATION 2$ WILL PUT IN YOUR WALLET :)  <br/> BE ADVISED A FLAT TAX OF 0.2$ IS APPLYED ON PAYMENT TRANSACTIONS <br/> ALL TRANSACTIONS BETWEEN WALLETS ARE FREE
+            </p>
+          </div>
+          <img className="mycontainer2" src={ewallet} alt="ewallet" />
+        </div>
+      </div>
+    </div>
+    
+  );
+}
+
+export default Home;
