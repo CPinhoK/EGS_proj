@@ -97,3 +97,40 @@ sudo docker-compose down
 ```bash
 sudo docker-compose logs
 ```
+
+## Kubernetes instructions
+Instructions for kubernetes:
+
+- Create namespace
+```bash
+kubectl create ns [namespace]
+```
+
+- Launch deployment
+```bash
+kubectl apply -f deployment.yaml 
+```
+
+- Build docker image
+```bash
+sudo docker build -t [image_name] .
+```
+  OR
+```bash
+sudo docker build -t [image_name] -f Dockerfile.app .
+```
+
+- Push docker image
+```bash
+sudo docker push [image_name]
+```
+
+- Get pods 
+```bash
+kubectl get pods -n [namespace]
+```
+
+- Enter shell inside pod
+```bash
+kubectl exec -ti [podname] -n [namespace] --/bin/bash
+```
