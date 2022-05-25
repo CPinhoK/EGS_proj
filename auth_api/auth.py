@@ -174,12 +174,12 @@ def runApi():
     def loginPage():
         global redirectUrl
         redirectUrl = ''
-        print(request.headers)
+        #print(request.headers)
         redirectUrl=request.headers.get('Referer')
         d = str(request.data.decode('utf-8'))
         try:
             data = json.loads(d)
-            print("\n\n",data,"\n\n")
+            #print("\n\n",data,"\n\n")
             #redirectUrl = data['redirectUrl']
             #redirectUrl=request.headers.get('Referer')
         except:
@@ -187,8 +187,8 @@ def runApi():
             pass
         if redirectUrl == None or redirectUrl == '':
             redirectUrl = str(request.environ['REMOTE_ADDR'])
-        print("Redirect to:"+redirectUrl)
         redir.append(redirectUrl)
+        print("Redirect to:"+redir[0])
         return render_template('login.html')
 
     @app.post('/login')
@@ -233,7 +233,7 @@ def runApi():
             print("Redirect to:"+redirectUrl)
             #response = redirect(redirectUrl, code=302)
             #headers = {'token' : token}
-            headers = 'token_' + token + 'user_'+username
+            headers = 'token_' + token + '_user_'+username
             #print(response.headers)
             return test(redirectUrl,headers)
         except:

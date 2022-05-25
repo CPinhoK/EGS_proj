@@ -15,7 +15,7 @@ export default function Login() {
       x=x.split("_")
       console.log(x[1])
       let token = x[1]
-      let user = x[2]
+      let user = x[3]
 
       let expires = new Date();
       let h = 1 // 1 hour 
