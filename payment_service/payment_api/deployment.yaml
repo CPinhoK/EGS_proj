@@ -1,0 +1,36 @@
+# Create App deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: papi
+  namespace: zppinho
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: papi
+  template:
+    metadata:
+      labels:
+        app: papi
+    spec:
+      containers:
+      - name: papi
+        image: registry.deti:5000/zppinho/papi:v1
+        ports:
+          - containerPort: 8000
+
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: papi
+  namespace: zppinho
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: papi

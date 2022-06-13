@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import databases
 import sqlalchemy
+from sqlalchemy.ext.declarative import declarative_base
 
 import random
 import string
@@ -13,8 +14,11 @@ import time
 
 ### Database configuration
 #print(f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@db:3306/{os.getenv('DB_NAME')}")
-##DATABASE_URL = f"mysql+pymysql://test:test@db:3306/test"
-DATABASE_URL = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@127.0.0.1:3306/{os.getenv('DB_NAME')}"
+#DATABASE_URL = f"mysql+pymysql://test:test@test:3306/test"
+DATABASE_URL = "mysql+pymysql://test:test@zppinho:3306/test"
+
+#DATABASE_URL = f"mysql+pymysql://test:test@zppinho:3306/test"
+#DATABASE_URL = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@127.0.0.1:3306/{os.getenv('DB_NAME')}"
 #DATABASE_URL = "sqlite:///./test.db"
 
 database = databases.Database(DATABASE_URL)
