@@ -1,0 +1,15 @@
+FROM mysql:latest
+
+#ENV MYSQL_ROOT_PASSWORD test
+#ENV MYSQL_DATABASE test
+#ENV MYSQL_USER test
+#ENV MYSQL_PASSWORD test
+
+RUN apt-get update && apt-get -y install vim && apt-get -y install net-tools
+
+EXPOSE 3306
+
+CMD ["mysqld"]
+
+#CMD ["mysqld","--user=root"]
+#CMD ["mysqld -u test -p test -h 127.0.0.1 -P 3306"]

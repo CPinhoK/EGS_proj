@@ -2,12 +2,12 @@
 
 echo "Waiting for database to launch on 3306..."
 
-nc -z db 3306
+nc -z 0.0.0.0 3306
 
 while [ $? -eq 0 ]
 do
-  sleep 0.1
-  nc -z db; echo $? 
+  sleep 0.2
+  echo $? | nc -z 0.0.0.0;
 done
 
 sleep 3

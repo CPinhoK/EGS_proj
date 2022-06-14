@@ -1,3 +1,4 @@
+wheel
 uvicorn
 pydantic
 fastapi
@@ -5,3 +6,5 @@ databases
 sqlalchemy
 aiosqlite
 aiomysql
+pymysql
+cryptography
