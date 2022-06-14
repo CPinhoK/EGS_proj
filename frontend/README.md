@@ -10,7 +10,7 @@ For test purposes it is possible to run a local deployment:
 To install the necessary requirements create a virtual environment and install the necessary requirements:
 
 ```bash
-pyhton -m venv venv
+python -m venv venv
 source venv/bin/activate
 cd egs
 pip install -r requirements.txt
@@ -25,7 +25,7 @@ source venv/bin/activate
 cd egs
 python manage.py makemigrations
 python manage.py migrate
-python3.8 manage.py runserver 7000
+python manage.py runserver 7000
 ```
 
 ### Create Super User

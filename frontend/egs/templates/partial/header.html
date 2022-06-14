@@ -39,8 +39,8 @@
                 <!-- SEARCH BAR -->
                 <div class="col-md-7">
                     <div class="header-search">
-                        <form method="POST" action="{% url 'search' %}">
-                            {% csrf_token %}
+                        <form method="GET" action="{% url 'search' %}">
+                            <!--
                             <select class="input-select" style="width: 290px;">
                                 <option value="0">All Categories</option>
                                 <option value="1">Antivirus & Security</option>
@@ -50,8 +50,9 @@
                                 <option value="5">Networking & Servers</option>
                                 <option value="6">Operating Systems</option>
                                 <option value="7">Programming & Web Development</option>
-                            </select>
-                            <input class="input" placeholder="Search here" style="width: 270px;" name="searched">
+                            </select>                         
+                           -->
+                            <input class="input" placeholder="Search here" style="width: 270px;" name="querysearch">
                             <button class="search-btn">Search</button>
                         </form>
                     </div>
@@ -61,16 +62,6 @@
                 <!-- ACCOUNT -->
                 <div class="col-md-3 clearfix">
                     <div class="header-ctn">
-                        <!-- Wishlist -->
-                        <div>
-                            <a href="#">
-                                <i class="fa fa-heart-o"></i>
-                                <span>Your Wishlist</span>
-                                <div class="qty">0</div>
-                            </a>
-                        </div>
-                        <!-- /Wishlist -->
-
                         <!-- Cart -->
                         <div class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
