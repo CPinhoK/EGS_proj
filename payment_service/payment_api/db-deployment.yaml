@@ -45,7 +45,7 @@ spec:
         resources: {}
         volumeMounts:
           - name: db-static
-            mountPath: /var/www/static
+            mountPath: /var/lib/mysql
       restartPolicy: Always
       volumes:
         - name: db-static
