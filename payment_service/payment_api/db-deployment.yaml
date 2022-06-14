@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: paymentapi-db
-        image: registry.deti:5000/zppinho/paymentapi-db:v1
+        image: registry.deti:5000/zppinho/paymentapi-db:latest
         ports:
         - containerPort: 3306 
         env:
@@ -27,7 +27,7 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: rootpassword
-        - name: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysql-secret
@@ -42,6 +42,15 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: user
+        resources: {}
+        volumeMounts:
+          - name: db-static
+            mountPath: /var/www/static
+      restartPolicy: Always
+      volumes:
+        - name: db-static
+          persistentVolumeClaim:
+            claimName: zppinho-db-pvc
 
 
 # Create Service for APP

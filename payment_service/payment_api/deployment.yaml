@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: papi
-        image: registry.deti:5000/zppinho/papi:v1
+        image: registry.deti:5000/zppinho/papi:latest
         ports:
           - containerPort: 8000
 

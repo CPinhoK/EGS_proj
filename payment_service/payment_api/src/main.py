@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import databases
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
-
+from sqlalchemy import *
 import random
 import string
 
@@ -14,8 +14,8 @@ import time
 
 ### Database configuration
 #print(f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@db:3306/{os.getenv('DB_NAME')}")
-#DATABASE_URL = f"mysql+pymysql://test:test@test:3306/test"
-DATABASE_URL = "mysql+pymysql://test:test@zppinho:3306/test"
+DATABASE_URL = f"mysql+pymysql://test:test@paymentapi-db:3306/test"
+#DATABASE_URL = "mysql+pymysql://test:test@dcbsdhvbcsecbuib:3306/test"
 
 #DATABASE_URL = f"mysql+pymysql://test:test@zppinho:3306/test"
 #DATABASE_URL = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@127.0.0.1:3306/{os.getenv('DB_NAME')}"
@@ -28,25 +28,25 @@ metadata = sqlalchemy.MetaData()
 payment_details_t = sqlalchemy.Table(  ##payment_details table
     "payment_details_t",
     metadata,
-    sqlalchemy.Column("paymentid", sqlalchemy.String, primary_key=True),
-    sqlalchemy.Column("incoming_paymentid", sqlalchemy.String),
-    sqlalchemy.Column("totaltopay", sqlalchemy.FLOAT),
-    sqlalchemy.Column("metodo_de_pagamento", sqlalchemy.String),
-    sqlalchemy.Column("source", sqlalchemy.String),
-    sqlalchemy.Column("payment_desc", sqlalchemy.String),
-    sqlalchemy.Column("timestamp_recv", sqlalchemy.String),
-    sqlalchemy.Column("timestamp_processed", sqlalchemy.String),
-    sqlalchemy.Column("wallet_that_payed", sqlalchemy.String),
+    sqlalchemy.Column("paymentid", String(32), primary_key=True),
+    sqlalchemy.Column("incoming_paymentid", String(32), unique=False),
+    sqlalchemy.Column("totaltopay", Float),
+    sqlalchemy.Column("metodo_de_pagamento", String(32)),
+    sqlalchemy.Column("source", String(32)),
+    sqlalchemy.Column("payment_desc", String(32)),
+    sqlalchemy.Column("timestamp_recv", String(32)),
+    sqlalchemy.Column("timestamp_processed", String(32)),
+    sqlalchemy.Column("wallet_that_payed", String(32)),
 )
 
 wallet_t = sqlalchemy.Table(  ##wallet table
     "wallet_t",
     metadata,
-    sqlalchemy.Column("wallet_id", sqlalchemy.String, primary_key=True,unique=True),
-    sqlalchemy.Column("cash_assoc", sqlalchemy.FLOAT),
-    sqlalchemy.Column("niff", sqlalchemy.Integer,unique=True),
-    sqlalchemy.Column("wallet_desc", sqlalchemy.String),
-    sqlalchemy.Column("user_id", sqlalchemy.String),
+    sqlalchemy.Column("wallet_id", String(32), primary_key=True,unique=True),
+    sqlalchemy.Column("cash_assoc", Float),
+    sqlalchemy.Column("niff", Integer,unique=True),
+    sqlalchemy.Column("wallet_desc", String(32)),
+    sqlalchemy.Column("user_id", String(32)),
 )
 
 engine = sqlalchemy.create_engine(
@@ -117,6 +117,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup() -> None:
+    database_ = database
+    if not database_.is_connected:
+        await database_.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown() -> None:
+    database_ = database
+    if database_.is_connected:
+        await database_.disconnect()
 
 
 @app.get("/")
@@ -131,6 +143,7 @@ async def get_status():
 async def payment_request(payment_details: Payment_details_in,request: Request,wallet_id :str):
     
     uid = await are_credentials_correct(request) #after this the payment should proceed
+    
     
     
     ##make sure this wallet belongs to the user
@@ -179,6 +192,8 @@ async def display_all_payments(request: Request):
     
     uid = await are_credentials_correct(request) #after this the payment history can be displayed
     
+    
+    
     ##get all wallets_ids of the user
     query_sel = sqlalchemy.select(wallet_t.c).where(wallet_t.c.user_id == uid)
     #print(query_sel)
@@ -210,6 +225,7 @@ async def display_all_payments(request: Request):
 async def display_payment(paympaymentid : str,request: Request):
     
     uid = await are_credentials_correct(request) #after this the payment spesific history can be displayed
+    
     
     
     ##get all wallets_ids of the user
@@ -247,6 +263,8 @@ async def get_all_wallets(request: Request):
     
     uid = await are_credentials_correct(request) #after this wallets info can be displayed
     
+    
+    
     query_sel = sqlalchemy.select(wallet_t.c).where(wallet_t.c.user_id == uid)
     #print(query_sel)
     wallets_info = await database.fetch_all(query_sel)
@@ -260,6 +278,8 @@ async def get_wallet(request: Request,wallet_id: str):
 
     uid = await are_credentials_correct(request) #after this wallet info can be displayed
     
+    
+    
     query_sel = sqlalchemy.select(wallet_t.c).where(wallet_t.c.user_id == uid, wallet_t.c.wallet_id==wallet_id)
     #print(query_sel)
     wallet_info = await database.fetch_all(query_sel)
@@ -272,6 +292,8 @@ async def get_wallet(request: Request,wallet_id: str):
 async def create_wallet(request: Request,wallet: Wallet_in):
     print(wallet)
     uid=await are_credentials_correct(request) #wallet can now be created
+    
+    
 
     ##search database for a wallet with the same niff
     query_sel = sqlalchemy.select(wallet_t.c.niff)
@@ -300,6 +322,8 @@ async def create_wallet(request: Request,wallet: Wallet_in):
 async def update_wallet(wallet_id: str,wallet: Wallet_update,request: Request):
     
     uid=await are_credentials_correct(request) #wallet can now be updated
+    
+    
     
     ##make sure this wallet belongs to the user
     query_sel = sqlalchemy.select(wallet_t.c).where(wallet_t.c.user_id == uid, wallet_t.c.wallet_id==wallet_id)
@@ -343,6 +367,8 @@ async def delete_wallet(wallet_id: str,request: Request):
     
     uid=await are_credentials_correct(request) #wallet can now be destroyed
     
+    
+    
     ##make sure this wallet belongs to the user
     query_sel = sqlalchemy.select(wallet_t.c).where(wallet_t.c.user_id == uid, wallet_t.c.wallet_id==wallet_id)
     #print(query_sel)
@@ -362,6 +388,8 @@ async def delete_wallet(wallet_id: str,request: Request):
 async def transfer_cash(request: Request,from_wallet_id :str,to_wallet_id :str,ammount: float):
     
     uid = await are_credentials_correct(request) #after this the payment should proceed
+    
+    
     
     ##make sure this wallet belongs to the user
     query_sel = sqlalchemy.select(wallet_t.c).where(wallet_t.c.user_id == uid, wallet_t.c.wallet_id==from_wallet_id)
@@ -454,7 +482,7 @@ async def websocket_endpoint(websocket: WebSocket):
 async def are_credentials_correct(request: Request,hd='auth'):
     if(good_auth_header(request,hd)):
         uid,token=split_header(request,hd)
-        #print("UID:"+uid+"\nToken:"+token)
+        print("UID:"+uid+"\nToken:"+token)
     else:
         raise HTTPException(status_code=404, detail="Invalid Credentials")
     
