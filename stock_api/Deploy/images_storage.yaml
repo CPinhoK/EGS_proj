@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tista-db-pvc
+  name: tista-images-pvc
   namespace: tista
 spec:
   accessModes:
@@ -9,4 +9,4 @@ spec:
   storageClassName: longhorn
   resources:
     requests:
-      storage: 500Mi
+      storage: 100Mi

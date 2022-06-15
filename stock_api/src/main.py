@@ -9,13 +9,15 @@ from pydantic import BaseModel
 
 import databases
 import sqlalchemy
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 import os
 
 
 ## Database configuration
-DATABASE_URL = "sqlite:///./stock.db"
-# DATABASE_URL = f"mysql+pymysql://test:test@127.0.0.1:3306/stock"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+# DATABASE_URL = "sqlite:///./stock.db"
+DATABASE_URL = f"mysql+pymysql://test:test@stockapi-db:3306/stockapi_db"
+# DATABASE_URL = "postgresql://test:test@127.0.0.1:5432/stock"
 
 sql_database = databases.Database(DATABASE_URL)
 
@@ -25,11 +27,11 @@ products = sqlalchemy.Table(
     "products",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, unique=True),
-    sqlalchemy.Column("name", sqlalchemy.String),
+    sqlalchemy.Column("name", sqlalchemy.String(100)),
     sqlalchemy.Column("price", sqlalchemy.FLOAT),
-    sqlalchemy.Column("image", sqlalchemy.String),
+    sqlalchemy.Column("image", sqlalchemy.String(100)),
     sqlalchemy.Column("category_id", sqlalchemy.Integer),
-    sqlalchemy.Column("status", sqlalchemy.String)
+    sqlalchemy.Column("status", sqlalchemy.String(100))
 )
 
 articles = sqlalchemy.Table(
@@ -37,14 +39,14 @@ articles = sqlalchemy.Table(
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, unique=True),
     sqlalchemy.Column("product_id", sqlalchemy.Integer),
-    sqlalchemy.Column("key", sqlalchemy.String, unique=True)
+    sqlalchemy.Column("key", sqlalchemy.String(100), unique=True)
 )
 
 categories = sqlalchemy.Table(
     "categories",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, unique=True),
-    sqlalchemy.Column("name", sqlalchemy.String)
+    sqlalchemy.Column("name", sqlalchemy.String(100))
 )
 
 engine = sqlalchemy.create_engine(
@@ -56,9 +58,7 @@ metadata.create_all(engine)
 app = FastAPI()
 
 origins = [
-    "http://localhost",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:7000",
+    "*"
 ]
 
 app.add_middleware(
@@ -104,8 +104,21 @@ database = [
     Article(id=3, product_id=2, key="Z0X9Y8")
 ]
 
-
 ## Methods:
+@app.on_event("startup")
+async def startup() -> None:
+    database_ = sql_database
+    if not database_.is_connected:
+        await database_.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown() -> None:
+    database_ = sql_database
+    if database_.is_connected:
+        await database_.disconnect()
+
+
 @app.get("/")
 def read_root():
     return {"This is an api for products stock management"}
@@ -113,6 +126,7 @@ def read_root():
 
 @app.get("/products")
 async def get_all_products(response: Response):
+    # await sql_database.connect()
     query = products.select()
 
     try:
@@ -328,7 +342,7 @@ async def insert_article(article : Article, response: Response):
         query = articles.insert().values(id = article.id, product_id = article.product_id, key = article.key)
 
         try:
-            await sql_database.fetch_all(query)
+            await sql_database.execute(query)
         except Exception as e: 
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"Status": 400, "Message": str(e)}
@@ -410,7 +424,7 @@ async def insert_category(category : Category, response: Response):
     query = categories.insert().values(id = category.id, name = category.name)
 
     try:
-        await sql_database.fetch_all(query)
+        await sql_database.execute(query)
     except Exception as e: 
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"Status": 400, "Message": str(e)}
@@ -471,7 +485,7 @@ async def delete_category(id: int, response: Response):
 @app.post("/Image/{id}")
 async def upload_image(id: int, response: Response, file: bytes = File(...)):
     name = str(uuid.uuid4())
-    url = 'images/' + name + ".png"
+    url = 'www/images/' + name + ".png"
 
     test_query = products.select().where(products.c.id == id)
     test_list = await sql_database.fetch_all(test_query)
@@ -489,7 +503,7 @@ async def upload_image(id: int, response: Response, file: bytes = File(...)):
             with open(url,'wb') as image:
                 image.write(file)
                 image.close()
-            await sql_database.fetch_all(query)
+            await sql_database.execute(query)
         except Exception as e:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"Status": 400, "Message": str(e)}
@@ -521,7 +535,7 @@ async def upload_image(id: int, response: Response, file: bytes = File(...)):
 @app.put("/Image/{id}")
 async def update_image(id: int, response: Response, file: bytes = File(...)):
     name = str(uuid.uuid4())
-    url = 'images/' + name + ".png"
+    url = 'www/images/' + name + ".png"
 
     test_query = products.select().where(products.c.id == id)
     test_list = await sql_database.fetch_all(test_query)
@@ -536,7 +550,7 @@ async def update_image(id: int, response: Response, file: bytes = File(...)):
             with open(url,'wb') as image:
                 image.write(file)
                 image.close()
-            await sql_database.fetch_all(query)
+            await sql_database.execute(query)
         except Exception as e:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"Status": 400, "Message": str(e)}
@@ -583,7 +597,7 @@ async def delete_image(id: int, response: Response):
         os.remove(test_list[0][3])
 
         try:
-            await sql_database.fetch_all(query)
+            await sql_database.execute(query)
         except Exception as e:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"Status": 400, "Message": str(e)}
