@@ -110,6 +110,7 @@ def runApi():
 
     @app.get('/signup')
     def signupPage():
+        print('################################################')
         redirectUrl = ''
         d = str(request.data.decode('utf-8'))
         try:
@@ -432,7 +433,8 @@ def runApi():
 
     def run():
         if __name__ == '__main__':
-            app.run(host='0.0.0.0')
+            print('################################################')
+            app.run(host='0.0.0.0', port=5001)
 
     # apiThread = threading.Thread(target=run)
     # stopThread = threading.Thread(target=stop)

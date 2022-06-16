@@ -17,35 +17,9 @@ spec:
     spec:
       containers:
       - name: auth-app
-        image: registry.deti:5000/hugom/auth-app:v3
+        image: registry.deti:5000/hugom/auth-app:latest
         ports:
-          - containerPort: 8080
-
-# Create nginx deployment
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-  namespace: hugom
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  strategy: {}
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - image: registry.deti:5000/hugom/nginx-proxy
-          name: nginx
-          ports:
-            - containerPort: 80
-          resources: {}
-      restartPolicy: Always
+          - containerPort: 5001
           
 # Create Service for APP
 ---
@@ -56,24 +30,10 @@ metadata:
   namespace: hugom
 spec:
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 5001
+    targetPort: 5001
   selector:
     app: auth-app
-
-# Create Service for NGINX
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx
-  namespace: hugom
-spec:
-  ports:
-  - port: 80
-    targetPort: 80
-  selector:
-    app: nginx
 
 # Configure Traefik
 ---
@@ -89,13 +49,13 @@ metadata:
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
 spec:
   rules:
-  - host: auth.egs
+  - host: hugom-auth.egs
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: nginx
+            name: auth-app
             port: 
-              number: 80
+              number: 5001
