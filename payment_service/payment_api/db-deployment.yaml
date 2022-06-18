@@ -18,6 +18,7 @@ spec:
       containers:
       - name: paymentapi-db
         image: registry.deti:5000/zppinho/paymentapi-db:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3306 
         env:
@@ -50,7 +51,7 @@ spec:
       volumes:
         - name: db-static
           persistentVolumeClaim:
-            claimName: zppinho-db-pvc
+            claimName: zppinho-mysql-db-pvc
 
 
 # Create Service for APP

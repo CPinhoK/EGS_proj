@@ -18,6 +18,9 @@ const headers = {
   'Content-Type': 'application/json',
   'accept': 'application/json',
   'auth':'',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Request-Headers': '*',
 }
 
 function CreateWallet() { //CREATE WALLET
@@ -61,7 +64,7 @@ function CreateWallet() { //CREATE WALLET
         <Button text='Create Wallet'  onClick={onClick}/>
         <div>     
         {
-            displayflag ? <Message url='http://localhost:8000/wallet' inc_data={JSON.stringify(apiCall)} hin={headers}/> : <p></p>
+            displayflag ? <Message url='//zppinho-papi.egs/wallet' inc_data={JSON.stringify(apiCall)} hin={headers}/> : <p></p>
         } 
         </div>
 
@@ -70,4 +73,4 @@ function CreateWallet() { //CREATE WALLET
 }
 
 export default CreateWallet;
-//<Message url='http://localhost:8000/wallet'/>
+//<Message url='//zppinho-papi.egs/wallet'/>

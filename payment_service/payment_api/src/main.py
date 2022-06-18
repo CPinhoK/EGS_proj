@@ -101,13 +101,20 @@ class Wallet_update(BaseModel):
 
 
 
-master_wallet_id="2tLgVHNHZxnsHPVev"
+master_wallet_id="k2G0R6uoKH998wzrd"
 
 app = FastAPI()
 
-origins = [
-    "*"
-]
+# origins = [
+#     "http://localhost",
+#     "https://localhost:8000",
+#     "https://localhost:8000",
+#     "https://zppinho-preact.egs",
+#     "https://zppinho-preact"
+#     "https://zppinho-papi.egs",
+#     "https://zppinho-papi",
+# ]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -294,7 +301,7 @@ async def create_wallet(request: Request,wallet: Wallet_in):
     uid=await are_credentials_correct(request) #wallet can now be created
     
     
-
+    print(wallet)
     ##search database for a wallet with the same niff
     query_sel = sqlalchemy.select(wallet_t.c.niff)
     #print(query_sel)

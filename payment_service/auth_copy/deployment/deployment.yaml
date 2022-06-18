@@ -1,0 +1,61 @@
+# Create App deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-app
+  namespace: zppinho
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-app
+  template:
+    metadata:
+      labels:
+        app: auth-app
+    spec:
+      containers:
+      - name: auth-app
+        image: registry.deti:5000/zppinho/auth-app:latest
+        ports:
+          - containerPort: 5001
+          
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-app
+  namespace: zppinho
+spec:
+  ports:
+  - port: 5001
+    targetPort: 5001
+  selector:
+    app: auth-app
+
+# Configure Traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth-app-k3s
+  namespace: zppinho
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+spec:
+  rules:
+  - host: zppinho-auth.egs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: auth-app
+            port: 
+              number: 5001

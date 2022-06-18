@@ -18,9 +18,9 @@ spec:
       containers:
       - name: papi
         image: registry.deti:5000/zppinho/papi:latest
+        imagePullPolicy: Always
         ports:
           - containerPort: 8000
-
 # Create Service for APP
 ---
 apiVersion: v1
@@ -34,3 +34,77 @@ spec:
     targetPort: 8000
   selector:
     app: papi
+
+
+#Configure Traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: papi-k3s
+  namespace: zppinho
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    #traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
+    #traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    #traefik.ingress.kubernetes.io/redirect-entry-point: http
+    #ingress.kubernetes.io/enable-cors: "true"
+    #traefik.ingress.kubernetes.io/enable-cors: "true"
+    #traefik.ingress.kubernetes.io/cors-origins: "*"
+    #traefik.ingress.kubernetes.io/cors-credentials: "true"
+    #traefik.ingress.kubernetes.io/cors-methods: "PUT, DELETE, POST, DELETE"
+    ingress.kubernetes.io/whitelist-x-forwarded-for: "true" 
+    traefik.ingress.kubernetes.io/custom-request-headers: "Access-Control-Allow-Origin:*||auth:* *||Access-Control-Allow-Methods:GET,PUT,DELETE,POST,OPTIONS"
+    traefik.ingress.kubernetes.io/custom-response-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:GET,PUT,DELETE,POST,OPTIONS||Access-Control-Allow-Headers:auth,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range||Access-Control-Expose-Headers:Content-Length,Content-Range||auth:* *"
+spec:
+  rules:
+  - host: zppinho-papi.egs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: papi
+            port: 
+              number: 8000
+
+
+
+apiVersion: networking.k8s.io/v1
+kind: IngressRoute
+metadata:
+  name: ingressroute-papi
+  namespace: zppinho
+spec:
+  entryPoints:
+    - http
+  routes:
+    - match: Host(`zppinho-papi.egs`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: papi
+          port: 8000
+          priority: 12
+      middlewares:
+      - name: cors-all
+---
+apiVersion: networking.k8s.io/v1
+kind: Middleware
+metadata:
+  name: cors-all
+  namespace: zppinho
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "POST"
+      - "DELETE"
+    accessControlAllowOriginList: - "origin-list-or-null"
+    accessControlMaxAge: 100
+    accessControlAllowHeaders:
+      - "Content-Type"
+      - "auth"
+    addVaryHeader: "true"

@@ -11,6 +11,9 @@ const headers = {
   'Content-Type': 'application/json',
   'accept': 'application/json',
   'auth':'',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Request-Headers': '*',
 }
 
 const sapiCall = {
@@ -27,7 +30,7 @@ function Payment() {
   const [displayflag,setdisplayflag]= useState(false);
   const [apiCall,setApicall]= useState(sapiCall);
   const [walletid,setwalletid]= useState(null);
-  const [final_url,setfinal_url]= useState('http://localhost:8000/payment?wallet_id=');
+  const [final_url,setfinal_url]= useState('//zppinho-papi.egs/payment?wallet_id=');
   const [cookies] = useCookies(['auth'])
   setApicall(sapiCall)
   
@@ -68,4 +71,4 @@ function Payment() {
 }
 
 export default Payment;
-//<Message url='http://localhost:8000/wallet'/>
+//<Message url='//zppinho-papi.egs/wallet'/>

@@ -22,10 +22,12 @@ COPY ./src/test.db /app
 
 COPY ./src/waittorun.sh /app
 
+COPY ./src/verify_databaseup.sh /app
+
 EXPOSE 8000
 
 EXPOSE 3306
 
-CMD [ "uvicorn", "main:app" , "--host", "0.0.0.0"]
+#CMD [ "uvicorn", "main:app" , "--host", "0.0.0.0"]
 
-#CMD [ "sh", "waittorun.sh"]
+CMD [ "sh", "waittorun.sh"]

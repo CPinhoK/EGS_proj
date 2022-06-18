@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: zppinho-mysql-db-pvc
+  name: zppinho-nginx-pvc
   namespace: zppinho
 spec:
   accessModes:

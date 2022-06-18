@@ -23,10 +23,10 @@ export default function F_cookie() {
     useEffect(() => {
       console.log("login");
 
-      window.location.href='http://192.168.1.120:5000/login';
+      window.location.href='//zppinho-auth.egs/login';
       /*const message = async () =>{
         try{
-            let res = await axios.get('http://192.168.1.120:5000/login');
+            let res = await axios.get('//192.168.1.120:5000/login');
             console.log(res)
             let result = JSON.stringify(res.data);
             setResult(result);
@@ -56,13 +56,13 @@ export default function F_cookie() {
   );
 }
 
-//<Message url='http://localhost:8000/wallet'/>
+//<Message url='//zppinho-papi.egs/wallet'/>
 
 /*
   var OnConfirm = async () =>{
     try{
         //window.open('https://www.google.com', '_blank');
-        let res = await axios.get('http://localhost:3000/auther');
+        let res = await axios.get('//papi:3000/auther');
         console.log(res)
         let result = JSON.stringify(res.data);
         setResult(result);
