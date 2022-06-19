@@ -19,6 +19,7 @@ const headers = {
   'accept': 'application/json',
   'auth':'',
   'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Credentials':true,
   'Access-Control-Allow-Headers': '*',
   'Access-Control-Request-Headers': '*',
 }

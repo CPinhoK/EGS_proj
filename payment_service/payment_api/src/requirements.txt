@@ -8,3 +8,4 @@ aiosqlite
 aiomysql
 pymysql
 cryptography
+requests

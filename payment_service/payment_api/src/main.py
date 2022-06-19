@@ -9,8 +9,9 @@ from sqlalchemy import *
 import random
 import string
 
-import os
 import time
+import requests
+
 
 ### Database configuration
 #print(f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@db:3306/{os.getenv('DB_NAME')}")
@@ -261,9 +262,34 @@ async def display_payment(paympaymentid : str,request: Request):
 async def authenticate(uid:str,token:str):
     #ask auth if credentials add up
     
-    if(uid=="notvalid" or token=="notvalid"):
-        return 1 
-    return 0
+    # if(uid=="notvalid" or token=="notvalid"):
+    #     return 1 
+    # return 0
+    # api-endpoint
+    URL = "http://zppinho-auth.egs/login"
+    
+    r = requests.get(URL)
+    
+    if r.status_code == 200 or r.status_code == 201:
+        print('Success!')
+    elif r.status_code == 404:
+        print('Not Found.')
+        return 1
+
+    # defining a params dict for the parameters to be sent to the API
+    PARAMS = {'token':token}
+    
+    # sending get request and saving the response as response object
+    r = requests.get(url = URL, params = PARAMS)
+    
+
+    if r.status_code == 200 or r.status_code == 201:
+        print('Success!')
+        return 0
+    
+    return 1
+
+
 
 @app.get("/wallet")
 async def get_all_wallets(request: Request):
