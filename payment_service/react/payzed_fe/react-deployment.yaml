@@ -59,8 +59,8 @@ metadata:
   namespace: zppinho
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
-    traefik.ingress.kubernetes.io/frontend-entry-points: http
+    # traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
+    traefik.ingress.kubernetes.io/frontend-entry-points: https,http
     # traefik.ingress.kubernetes.io/redirect-entry-point: http
     # traefik.ingress.kubernetes.io/router.tls: "true"
     # traefik.ingress.kubernetes.io/router.tls.certresolver: whoami-secret
@@ -86,27 +86,32 @@ spec:
             name: preact
             port: 
               number: 80
+  tls:
+    - hosts:
+      - zppinho-preact.egs
+      - zppinho-papi.egs
+      secretName: whoami-secret
 
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: midheader
-  namespace: zppinho
-spec:
-  headers:
-    accessControlAllowMethods:
-      - "GET"
-      - "OPTIONS"
-      - "PUT"
-      - "POST"
-      - "DELETE"
-      - "HEAD"
-      - "PATCH"
-    accessControlAllowOriginList: 
-      - "*"
-    accessControlMaxAge: 100
-    addVaryHeader: true
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: midheader
+#   namespace: zppinho
+# spec:
+#   headers:
+#     accessControlAllowMethods:
+#       - "GET"
+#       - "OPTIONS"
+#       - "PUT"
+#       - "POST"
+#       - "DELETE"
+#       - "HEAD"
+#       - "PATCH"
+#     accessControlAllowOriginList: 
+#       - "*"
+#     accessControlMaxAge: 100
+#     addVaryHeader: true
 
 
 ---

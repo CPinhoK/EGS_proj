@@ -47,12 +47,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
     #traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
-    #traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/frontend-entry-points: https,http
     #traefik.ingress.kubernetes.io/redirect-entry-point: http
     #ingress.kubernetes.io/enable-cors: "true"
     traefik.ingress.kubernetes.io/router.tls: "true"
-    #traefik.ingress.kubernetes.io/enable-cors: "true"
-    #traefik.ingress.kubernetes.io/cors-origins: "*"
+    traefik.ingress.kubernetes.io/enable-cors: "true"
+    traefik.ingress.kubernetes.io/cors-origins: "*"
     #traefik.ingress.kubernetes.io/cors-credentials: "true"
     #traefik.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
     #ingress.kubernetes.io/whitelist-x-forwarded-for: "true" 
