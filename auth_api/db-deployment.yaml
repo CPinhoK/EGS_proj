@@ -1,0 +1,66 @@
+# Create App deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-db
+  namespace: hugom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-db
+  template:
+    metadata:
+      labels:
+        app: auth-db
+    spec:
+      containers:
+      - name: auth-db
+        image: registry.deti:5000/hugom/auth-db:latest
+        ports:
+        - containerPort: 3306 
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: rootpassword
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: user
+        resources: {}
+        volumeMounts:
+          - name: db-static
+            mountPath: /var/lib/mysql
+      restartPolicy: Always
+      volumes:
+        - name: db-static
+          persistentVolumeClaim:
+            claimName: hugom-db-pvc
+
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-db
+  namespace: hugom
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: auth-db

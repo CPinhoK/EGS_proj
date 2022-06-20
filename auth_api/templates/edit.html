@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <title>Sign Up</title>
+  <title>Account</title>
   <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
@@ -66,20 +66,22 @@
     </style>
   </head>
   <body>
-    <form name="signup" method="post">
-      <h1>SIGN UP</h1>
+    <form name="update" method="post">
+      <h1>ACCOUNT</h1>
       <div class="icon">
         <i class="fas fa-user-circle"></i>
       </div>
       <div class="formcontainer">
       <div class="container">
         <label for="username"><strong>Username</strong></label>
-        <input type="text" placeholder="Enter Username" name="username" required>
+        <input type="text" placeholder="{{username}}" name="newUsername">
         <label for="password"><strong>Password</strong></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
-        <input type="hidden" name="redirectUrl" value={{result}}>
+        <input type="password" placeholder="{{password}}" name="newPassword">
+        <input type="hidden" name="redirectUrl" value={{url}}>
+        <input type="hidden" name="username" value={{username}}>
+        <input type="hidden" name="password" value={{password}}>
       </div>
-      <button><strong>SIGN UP</strong></button>
-      </form>
+      <button><strong>EDIT</strong></button>
+    </form>
   </body>
 </html>

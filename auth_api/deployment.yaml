@@ -1,0 +1,138 @@
+# # Create App deployment
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: auth-app
+#   namespace: hugom
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: auth-app
+#   template:
+#     metadata:
+#       labels:
+#         app: auth-app
+#     spec:
+#       containers:
+#       - name: auth-app
+#         image: registry.deti:5000/hugom/auth-app
+#         ports:
+#           - containerPort: 5001
+          
+# # Create Service for APP
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: auth-app
+#   namespace: hugom
+# spec:
+#   ports:
+#   - port: 5001
+#     targetPort: 5001
+#   selector:
+#     app: auth-app
+
+# # Configure Traefik
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: auth-app-k3s
+#   namespace: hugom
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+#     traefik.ingress.kubernetes.io/redirect-entry-point: https
+#     traefik.ingress.kubernetes.io/redirect-permanent: "true"
+# spec:
+#   rules:
+#   - host: hugom-auth.egs
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: auth-app
+#             port: 
+#               number: 5001
+
+
+# Create App deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: hugom
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: registry.deti:5000/hugom/auth-api:latest
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "10m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8111
+      #   volumeMounts:
+      #     - name: images-static
+      #       mountPath: /app/www/images
+      # restartPolicy: Always
+      # volumes:
+      #   - name: images-static
+      #     persistentVolumeClaim:
+      #       claimName: hugom-images-pvc
+
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: hugom
+spec:
+  ports:
+  - port: 8111
+    targetPort: 8111
+  selector:
+    app: app
+
+# Configure Traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-k3s
+  namespace: hugom
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+spec:
+  rules:
+  - host: hugom.egs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app
+            port: 
+              number: 8111
