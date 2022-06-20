@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: papi
-  namespace: zppinho
+  namespace: egeeks
 spec:
   replicas: 1
   selector:
@@ -22,13 +22,34 @@ spec:
         resources: {}
         ports:
           - containerPort: 8000
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: rootpassword
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: user
 # Create Service for APP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: papi
-  namespace: zppinho
+  namespace: egeeks
 spec:
   ports:
   - port: 8000
@@ -43,7 +64,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: papi-k3s
-  namespace: zppinho
+  namespace: egeeks
   annotations:
     kubernetes.io/ingress.class: traefik
     #traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
@@ -74,4 +95,5 @@ spec:
   - hosts:
     - zppinho-papi.egs
     - zppinho-preact.egs
+    - hugom.egs
     secretName: whoami-secret

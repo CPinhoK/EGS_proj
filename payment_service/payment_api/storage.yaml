@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: zppinho-mysql-db-pvc
-  namespace: zppinho
+  namespace: egeeks
 spec:
   accessModes:
     - ReadWriteOnce

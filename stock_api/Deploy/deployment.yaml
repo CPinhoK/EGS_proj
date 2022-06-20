@@ -3,19 +3,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
-  namespace: tista
+  name: stock-app
+  namespace: egeeks
 spec:
   selector:
     matchLabels:
-      app: app
+      app: stock-app
   template:
     metadata:
       labels:
-        app: app
+        app: stock-app
     spec:
       containers:
-      - name: app
+      - name: stock-app
         image: registry.deti:5000/tista/stockapi:latest
         resources:
           requests:
@@ -25,7 +25,7 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 8000
+        - containerPort: 8005
         volumeMounts:
           - name: images-static
             mountPath: /app/www/images
@@ -42,7 +42,7 @@ spec:
 # kind: Deployment
 # metadata:
 #   name: nginx
-#   namespace: tista
+#   namespace: egeeks
 # spec:
 #   replicas: 1
 #   selector:
@@ -75,14 +75,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app
-  namespace: tista
+  name: stock-app
+  namespace: egeeks
 spec:
   ports:
-  - port: 8000
-    targetPort: 8000
+  - port: 8005
+    targetPort: 8005
   selector:
-    app: app
+    app: stock-app
 
 
 # # Create Service for nginx
@@ -91,7 +91,7 @@ spec:
 # kind: Service
 # metadata:
 #   name: nginx
-#   namespace: tista
+#   namespace: egeeks
 # spec:
 #   ports:
 #   - port: 80
@@ -105,8 +105,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app-k3s
-  namespace: tista
+  name: stock-k3s
+  namespace: egeeks
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/frontend-entry-points: http,https
@@ -121,6 +121,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: app
+            name: stock-app
             port: 
-              number: 8000
+              number: 8005

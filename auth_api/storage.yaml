@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: hugom-db-pvc
-  namespace: hugom
+  namespace: egeeks
 spec:
   accessModes:
     - ReadWriteOnce

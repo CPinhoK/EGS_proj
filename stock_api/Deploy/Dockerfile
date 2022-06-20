@@ -15,8 +15,8 @@ RUN pip install -r requirements.txt
 
 COPY ./src/main.py /app
 
-EXPOSE 8000/tcp
+EXPOSE 8005/tcp
 
 VOLUME /app/www/
 
-ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0"]
+ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0" ,"--port", "8005"]

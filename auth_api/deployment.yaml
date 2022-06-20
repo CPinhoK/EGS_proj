@@ -4,7 +4,7 @@
 # kind: Deployment
 # metadata:
 #   name: auth-app
-#   namespace: hugom
+#   namespace: egeeks
 # spec:
 #   replicas: 1
 #   selector:
@@ -27,7 +27,7 @@
 # kind: Service
 # metadata:
 #   name: auth-app
-#   namespace: hugom
+#   namespace: egeeks
 # spec:
 #   ports:
 #   - port: 5001
@@ -41,7 +41,7 @@
 # kind: Ingress
 # metadata:
 #   name: auth-app-k3s
-#   namespace: hugom
+#   namespace: egeeks
 #   annotations:
 #     kubernetes.io/ingress.class: traefik
 #     traefik.ingress.kubernetes.io/frontend-entry-points: http,https
@@ -66,19 +66,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
-  namespace: hugom
+  name: auth-app
+  namespace: egeeks
 spec:
   selector:
     matchLabels:
-      app: app
+      app: auth-app
   template:
     metadata:
       labels:
-        app: app
+        app: auth-app
     spec:
       containers:
-      - name: app
+      - name: auth-app
         image: registry.deti:5000/hugom/auth-api:latest
         resources:
           requests:
@@ -88,7 +88,29 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 8111
+        - containerPort: 8006
+        env:
+        #- name: MARIADB_RANDOM_ROOT_PASSWORD
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hugo-mysql-secret
+              key: rootpassword
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hugo-mysql-secret
+              key: password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: hugo-mysql-secret
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: hugo-mysql-secret
+              key: user
       #   volumeMounts:
       #     - name: images-static
       #       mountPath: /app/www/images
@@ -103,27 +125,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app
-  namespace: hugom
+  name: auth-app
+  namespace: egeeks
 spec:
   ports:
-  - port: 8111
-    targetPort: 8111
+  - port: 8006
+    targetPort: 8006
   selector:
-    app: app
+    app: auth-app
 
 # Configure Traefik
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app-k3s
-  namespace: hugom
+  name: auth-app-k3s
+  namespace: egeeks
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/frontend-entry-points: https,http
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    traefik.ingress.kubernetes.io/custom-request-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT||Access-Control-Allow-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||Access-Control-Expose-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type"
+    traefik.ingress.kubernetes.io/custom-response-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT||Access-Control-Allow-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||Access-Control-Expose-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type"
 spec:
   rules:
   - host: hugom.egs
@@ -133,6 +157,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: app
+            name: auth-app
             port: 
-              number: 8111
+              number: 8006

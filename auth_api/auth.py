@@ -23,7 +23,7 @@ TOKEN_TEST = 'DAiQRA9tuKJzVq3AsR69g8KvBokaU6XrRIMMXP45KUS3jJSMUKFYsByHMo6NOQ8X'
 
 ### Database
 
-DATABASE_URL = f"mysql+pymysql://test:test@auth-db:3306/auth-db"
+DATABASE_URL = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@auth-db:3306/{os.getenv('MYSQL_DATABASE')}"
 
 database = databases.Database(DATABASE_URL)
 
@@ -389,7 +389,9 @@ def runApi():
             return response
 
     if __name__ == '__main__':
-        app.run(host='0.0.0.0', port=8111)
+        context = ('server.crt', 'server.key')#certificate and key file
+        #app.run(host='0.0.0.0', port=8006,ssl_context=context)
+        app.run(host='0.0.0.0', port=8006)
 
 
 def generateRandom():

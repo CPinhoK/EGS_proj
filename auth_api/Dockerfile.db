@@ -5,7 +5,7 @@ FROM mysql:latest
 #ENV MYSQL_USER test
 #ENV MYSQL_PASSWORD test
 
-RUN apt-get update && apt-get -y install vim && apt-get -y install net-tools
+RUN apt-get update && apt-get -y install vim && apt-get -y install net-tools && apt-get -y install curl
 
 EXPOSE 3333
 

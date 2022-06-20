@@ -1,14 +1,26 @@
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from "react-router-dom";
 
-//import axios from 'axios';
+import axios from 'axios';
+
+
+
+const sapiCall = {
+  redirectUrl: '//zppinho-preact.egs/params/',
+};
 
 
 export default function F_cookie() {
   const [cookies] = useCookies(['auth'])
   const navigate = useNavigate();
-
+  const headers = {
+    'Content-Type': 'application/json',
+    'accept': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Request-Headers': '*',
+  }
   //useEffect(() => {console.log("Read Cookie")},[]) 
 
   var  Readcookie = () =>{
@@ -19,26 +31,24 @@ export default function F_cookie() {
     }
   }
   var OnConfirm = async () =>{
-    //const[result,setResult] = useState(null);
+    const[result,setResult] = useState(null);
     useEffect(() => {
       console.log("login");
-
-      window.location.href='//zppinho-auth.egs/login';
-      /*const message = async () =>{
-        try{
-            let res = await axios.get('//192.168.1.120:5000/login');
-            console.log(res)
-            let result = JSON.stringify(res.data);
-            setResult(result);
-            console.log(result)
-        }catch(e){
-            console.log(e)
-        }
-        };
-        message() */
-
-
-    },[]);
+      //window.location.href='//zppinho-auth.egs/login';
+      // const message = async () =>{
+      //   try{
+      //       let res = await axios.get('http://127.0.0.1:8006/login');
+      //       console.log(res)
+      //       let result = JSON.stringify(res.data);
+      //       setResult(result);
+      //       console.log(result)
+      //   }catch(e){
+      //       console.log(e)
+      //   }
+      //   };
+      //   message() 
+        //console.log(result)
+    },[]); // eslint-disable-line react-hooks/exhaustive-deps
   
   };
 

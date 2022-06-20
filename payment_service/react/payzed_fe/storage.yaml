@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: zppinho-nginx-pvc
-  namespace: zppinho
+  namespace: egeeks
 spec:
   accessModes:
     - ReadWriteOnce

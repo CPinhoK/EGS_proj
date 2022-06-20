@@ -18,8 +18,6 @@ RUN pip install -r requirements.txt
 
 COPY ./src/main.py /app
 
-COPY ./src/test.db /app
-
 COPY ./src/waittorun.sh /app
 
 COPY ./src/verify_databaseup.sh /app

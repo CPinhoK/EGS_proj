@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: preact
-  namespace: zppinho
+  namespace: egeeks
 spec:
   replicas: 1
   selector:
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: preact
-  namespace: zppinho
+  namespace: egeeks
 spec:
   ports:
   - port: 80
@@ -56,7 +56,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: preact-k3s
-  namespace: zppinho
+  namespace: egeeks
   annotations:
     kubernetes.io/ingress.class: traefik
     # traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
@@ -90,6 +90,7 @@ spec:
     - hosts:
       - zppinho-preact.egs
       - zppinho-papi.egs
+      - hugom.egs
       secretName: whoami-secret
 
 # ---
@@ -97,7 +98,7 @@ spec:
 # kind: Middleware
 # metadata:
 #   name: midheader
-#   namespace: zppinho
+#   namespace: egeeks
 # spec:
 #   headers:
 #     accessControlAllowMethods:
@@ -118,8 +119,8 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: whoami
-  namespace: zppinho
+  name: preact-whoami
+  namespace: egeeks
 spec:
   entryPoints:
     - websecure
@@ -137,7 +138,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: TLSStore
 metadata:
   name: default
-  namespace: zppinho
+  namespace: egeeks
 spec:
   defaultCertificate:
     secretName: whoami-secret
@@ -149,7 +150,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-conf
-  namespace: zppinho
+  namespace: egeeks
 data:
   nginx.conf: |
     worker_processes 4;

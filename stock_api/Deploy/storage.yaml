@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: tista-db-pvc
-  namespace: tista
+  namespace: egeeks
 spec:
   accessModes:
     - ReadWriteOnce

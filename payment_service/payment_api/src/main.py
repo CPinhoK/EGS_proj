@@ -11,11 +11,11 @@ import string
 
 import time
 import requests
-
+import os
 
 ### Database configuration
 #print(f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@db:3306/{os.getenv('DB_NAME')}")
-DATABASE_URL = f"mysql+pymysql://test:test@paymentapi-db:3306/test"
+DATABASE_URL = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@paymentapi-db:3306/{os.getenv('MYSQL_DATABASE')}"
 #DATABASE_URL = "mysql+pymysql://test:test@dcbsdhvbcsecbuib:3306/test"
 
 #DATABASE_URL = f"mysql+pymysql://test:test@zppinho:3306/test"
@@ -266,7 +266,7 @@ async def authenticate(uid:str,token:str):
     #     return 1 
     # return 0
     # api-endpoint
-    URL = "http://zppinho-auth.egs/login"
+    URL = "http://hugom.egs/login"
     
     r = requests.get(URL)
     
@@ -276,6 +276,7 @@ async def authenticate(uid:str,token:str):
         print('Not Found.')
         return 1
 
+    URL = "http://hugom.egs/status"
     # defining a params dict for the parameters to be sent to the API
     PARAMS = {'token':token}
     
