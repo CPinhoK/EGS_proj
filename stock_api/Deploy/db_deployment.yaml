@@ -1,0 +1,66 @@
+# Create App deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockapi-db
+  namespace: egeeks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stockapi-db
+  template:
+    metadata:
+      labels:
+        app: stockapi-db
+    spec:
+      containers:
+      - name: stockapi-db
+        image: registry.deti:5000/tista/stockapi-db:latest
+        ports:
+        - containerPort: 3306 
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: diogo-mysql-secret
+              key: rootpassword
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: diogo-mysql-secret
+              key: password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: diogo-mysql-secret
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: diogo-mysql-secret
+              key: user
+        resources: {}
+        volumeMounts:
+          - name: db-static
+            mountPath: /var/lib/mysql
+      restartPolicy: Always
+      volumes:
+        - name: db-static
+          persistentVolumeClaim:
+            claimName: tista-db-pvc
+
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stockapi-db
+  namespace: egeeks
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: stockapi-db

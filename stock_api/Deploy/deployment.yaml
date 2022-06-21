@@ -3,20 +3,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
-  namespace: tista
+  name: stock-app
+  namespace: egeeks
 spec:
   selector:
     matchLabels:
-      app: app
+      app: stock-app
   template:
     metadata:
       labels:
-        app: app
+        app: stock-app
     spec:
       containers:
-      - name: app
-        image: registry.deti:5000/tista/stock:v1
+      - name: stock-app
+        image: registry.deti:5000/tista/stockapi:latest
         resources:
           requests:
             memory: "32Mi"
@@ -25,41 +25,49 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 8080
-
-
-# Create nginx deployment
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-  namespace: tista
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  strategy: {}
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - image: registry.deti:5000/tista/nginx-proxy
-          name: nginx
-          ports:
-            - containerPort: 80
-          resources: {}
-          volumeMounts:
-            - name: nginx-static
-              mountPath: /var/www/static
+        - containerPort: 8005
+        volumeMounts:
+          - name: images-static
+            mountPath: /app/www/images
       restartPolicy: Always
       volumes:
-        - name: nginx-static
+        - name: images-static
           persistentVolumeClaim:
-            claimName: app-pvc
+            claimName: tista-images-pvc
+
+
+# # Create nginx deployment
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nginx
+#   namespace: egeeks
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: nginx
+#   strategy: {}
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx
+#     spec:
+#       containers:
+#         - image: registry.deti:5000/tista/nginx-proxy
+#           name: nginx
+#           ports:
+#             - containerPort: 80
+#           resources: {}
+#           volumeMounts:
+#             - name: nginx-static
+#               mountPath: /var/www/static
+#       restartPolicy: Always
+#       volumes:
+#         - name: nginx-static
+#           persistentVolumeClaim:
+#             claimName: app-pvc
 
 
 # Create Service for APP
@@ -67,29 +75,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app
-  namespace: tista
+  name: stock-app
+  namespace: egeeks
 spec:
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 8005
+    targetPort: 8005
   selector:
-    app: app
+    app: stock-app
 
 
-# Create Service for APP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx
-  namespace: tista
-spec:
-  ports:
-  - port: 80
-    targetPort: 80
-  selector:
-    app: nginx
+# # Create Service for nginx
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nginx
+#   namespace: egeeks
+# spec:
+#   ports:
+#   - port: 80
+#     targetPort: 80
+#   selector:
+#     app: nginx
 
 
 # Configure Traefik
@@ -97,8 +105,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app-k3s
-  namespace: tista
+  name: stock-k3s
+  namespace: egeeks
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/frontend-entry-points: http,https
@@ -106,13 +114,13 @@ metadata:
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
 spec:
   rules:
-  - host: app.k3s
+  - host: tista-stockapi.egs
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: nginx
+            name: stock-app
             port: 
-              number: 80
+              number: 8005

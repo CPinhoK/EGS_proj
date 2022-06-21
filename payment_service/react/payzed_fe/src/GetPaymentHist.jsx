@@ -12,12 +12,15 @@ const headers = {
   'Content-Type': 'application/json',
   'accept': 'application/json',
   'auth':'',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Request-Headers': '*',
 }
 
 function GetPaymentHist() {
   const [displayflag,setdisplayflag]= useState(false);
   const [paymentid,setpayment]= useState(null);
-  const [final_url,setfinal_url]= useState('http://localhost:8000/payment');
+  const [final_url,setfinal_url]= useState('//zppinho-papi.egs/payment');
   const [cookies] = useCookies(['auth'])
   
   const getData_id = (val) =>{
@@ -30,9 +33,9 @@ function GetPaymentHist() {
     console.log(paymentid);
     readcookiesandset();
     if(paymentid!=null && paymentid.length>0){
-      setfinal_url('http://localhost:8000/payment/'+paymentid);
+      setfinal_url('//zppinho-papi.egs/payment/'+paymentid);
     }else if(paymentid==null||paymentid.length === 0){
-      setfinal_url('http://localhost:8000/payment')
+      setfinal_url('//zppinho-papi.egs/payment')
     }
     setdisplayflag(!displayflag)
     console.log(displayflag)
@@ -61,4 +64,4 @@ function GetPaymentHist() {
 }
 
 export default GetPaymentHist;
-//<Message url='http://localhost:8000/wallet'/>
+//<Message url='//zppinho-papi.egs/wallet'/>

@@ -11,13 +11,16 @@ const headers = {
   'Content-Type': 'application/json',
   'accept': 'application/json',
   'auth':'',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Request-Headers': '*',
 }
 
 function DeleteWallet() {
   const [displayflag,setdisplayflag]= useState(false);
   const [displayalert,setdisplayalert]= useState(false);
   const [walletid,setwalletid]= useState(null);
-  const [final_url,setfinal_url]= useState('http://localhost:8000/wallet');
+  const [final_url,setfinal_url]= useState('//zppinho-papi.egs/wallet');
   const [cookies] = useCookies(['auth'])
   
   const getData_id = (val) =>{
@@ -27,9 +30,9 @@ function DeleteWallet() {
   var onConfirm = () =>{
     console.log('Click Confirm')  
     if(walletid!=null && walletid.length>0){
-        setfinal_url('http://localhost:8000/wallet/'+walletid);
+        setfinal_url('//zppinho-papi.egs/wallet/'+walletid);
       }else if(walletid==null||walletid.length === 0){
-        setfinal_url('http://localhost:8000/wallet')
+        setfinal_url('//zppinho-papi.egs/wallet')
       }
       setdisplayflag(!displayflag)
       console.log(displayflag)
@@ -71,4 +74,4 @@ function DeleteWallet() {
 }
 
 export default DeleteWallet;
-//<Message url='http://localhost:8000/wallet'/>
+//<Message url='//zppinho-papi.egs/wallet'/>

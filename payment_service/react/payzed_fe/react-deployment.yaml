@@ -1,0 +1,174 @@
+# Create App deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: preact
+  namespace: egeeks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: preact
+  template:
+    metadata:
+      labels:
+        app: preact
+    spec:
+      containers:
+      - name: preact
+        image: registry.deti:5000/zppinho/preact:latest
+        imagePullPolicy: Always
+        resources: {}
+        volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+            readOnly: true
+        ports:
+          - containerPort: 80
+      restartPolicy: Always
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+               - key: nginx.conf
+                 path: nginx.conf
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: preact
+  namespace: egeeks
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: preact
+
+
+# Configure Traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: preact-k3s
+  namespace: egeeks
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    # traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
+    traefik.ingress.kubernetes.io/frontend-entry-points: https,http
+    # traefik.ingress.kubernetes.io/redirect-entry-point: http
+    # traefik.ingress.kubernetes.io/router.tls: "true"
+    # traefik.ingress.kubernetes.io/router.tls.certresolver: whoami-secret
+    # ingress.kubernetes.io/redirect-permanent: "true"
+    # ingress.kubernetes.io/enable-cors: "true"
+    # traefik.ingress.kubernetes.io/router.tls: "true"
+    # traefik.ingress.kubernetes.io/enable-cors: "true"
+    # traefik.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
+    # traefik.ingress.kubernetes.io/cors-allow-origin: "*"
+    # traefik.ingress.kubernetes.io/cors-allow-credentials: "true"
+    # ingress.kubernetes.io/whitelist-x-forwarded-for: "true" 
+    traefik.ingress.kubernetes.io/custom-request-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT||Access-Control-Allow-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||Access-Control-Expose-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||auth:* *"
+    traefik.ingress.kubernetes.io/custom-response-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT||Access-Control-Allow-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||Access-Control-Expose-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||auth:* *"
+spec:
+  rules:
+  - host: zppinho-preact.egs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: preact
+            port: 
+              number: 80
+  tls:
+    - hosts:
+      - zppinho-preact.egs
+      - zppinho-papi.egs
+      - hugom.egs
+      secretName: whoami-secret
+
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: midheader
+#   namespace: egeeks
+# spec:
+#   headers:
+#     accessControlAllowMethods:
+#       - "GET"
+#       - "OPTIONS"
+#       - "PUT"
+#       - "POST"
+#       - "DELETE"
+#       - "HEAD"
+#       - "PATCH"
+#     accessControlAllowOriginList: 
+#       - "*"
+#     accessControlMaxAge: 100
+#     addVaryHeader: true
+
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: preact-whoami
+  namespace: egeeks
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`zppinho-preact.egs`) && PathPrefix(`/`)
+    services:
+    - name: preact
+      port: 80
+  tls:
+    secretName: whoami-secret
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: egeeks
+spec:
+  defaultCertificate:
+    secretName: whoami-secret
+
+
+#NGINX Config map
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+  namespace: egeeks
+data:
+  nginx.conf: |
+    worker_processes 4;
+
+    events { worker_connections 1024; }
+
+    http {
+        server {
+            add_header Access-Control-Allow-Origin *;
+            listen 80;
+            listen 443;
+            listen 3000;
+            root  /usr/share/nginx/html;
+            include /etc/nginx/mime.types;
+
+
+            location /params {
+                try_files $uri /index.html;
+            }
+        }
+    }

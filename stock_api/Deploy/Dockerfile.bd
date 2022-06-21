@@ -1,0 +1,12 @@
+FROM mysql:latest
+
+# ENV MYSQL_ROOT_PASSWORD test
+# ENV MYSQL_DATABASE stockapi-db
+# ENV MYSQL_USER test
+# ENV MYSQL_PASSWORD test
+
+RUN apt-get update && apt-get -y install vim
+
+EXPOSE 3306
+
+CMD ["mysqld","--user=root"]

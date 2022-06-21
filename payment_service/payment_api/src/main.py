@@ -9,12 +9,13 @@ from sqlalchemy import *
 import random
 import string
 
-import os
 import time
+import requests
+import os
 
 ### Database configuration
 #print(f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@db:3306/{os.getenv('DB_NAME')}")
-DATABASE_URL = f"mysql+pymysql://test:test@paymentapi-db:3306/test"
+DATABASE_URL = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@paymentapi-db:3306/{os.getenv('MYSQL_DATABASE')}"
 #DATABASE_URL = "mysql+pymysql://test:test@dcbsdhvbcsecbuib:3306/test"
 
 #DATABASE_URL = f"mysql+pymysql://test:test@zppinho:3306/test"
@@ -101,13 +102,20 @@ class Wallet_update(BaseModel):
 
 
 
-master_wallet_id="2tLgVHNHZxnsHPVev"
+master_wallet_id="k2G0R6uoKH998wzrd"
 
 app = FastAPI()
 
-origins = [
-    "*"
-]
+# origins = [
+#     "http://localhost",
+#     "https://localhost:8000",
+#     "https://localhost:8000",
+#     "https://zppinho-preact.egs",
+#     "https://zppinho-preact"
+#     "https://zppinho-papi.egs",
+#     "https://zppinho-papi",
+# ]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -254,9 +262,35 @@ async def display_payment(paympaymentid : str,request: Request):
 async def authenticate(uid:str,token:str):
     #ask auth if credentials add up
     
-    if(uid=="notvalid" or token=="notvalid"):
-        return 1 
-    return 0
+    # if(uid=="notvalid" or token=="notvalid"):
+    #     return 1 
+    # return 0
+    # api-endpoint
+    URL = "http://hugom.egs/login"
+    
+    r = requests.get(URL)
+    
+    if r.status_code == 200 or r.status_code == 201:
+        print('Success!')
+    elif r.status_code == 404:
+        print('Not Found.')
+        return 1
+
+    URL = "http://hugom.egs/status"
+    # defining a params dict for the parameters to be sent to the API
+    PARAMS = {'token':token}
+    
+    # sending get request and saving the response as response object
+    r = requests.get(url = URL, params = PARAMS)
+    
+
+    if r.status_code == 200 or r.status_code == 201:
+        print('Success!')
+        return 0
+    
+    return 1
+
+
 
 @app.get("/wallet")
 async def get_all_wallets(request: Request):
@@ -294,7 +328,7 @@ async def create_wallet(request: Request,wallet: Wallet_in):
     uid=await are_credentials_correct(request) #wallet can now be created
     
     
-
+    print(wallet)
     ##search database for a wallet with the same niff
     query_sel = sqlalchemy.select(wallet_t.c.niff)
     #print(query_sel)

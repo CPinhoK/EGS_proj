@@ -1,9 +1,0 @@
-curl -X "POST" ^
-  "https://virtserver.swaggerhub.com/hugo.moinheiro/auth/v1/signup" ^
-  -H "accept: application/json" ^
-  -H "Content-Type: HTML Form" ^
-  -d ^
-"{^
-  ""username"": ""admin"",^
-  ""password"": ""admin""^
-}"

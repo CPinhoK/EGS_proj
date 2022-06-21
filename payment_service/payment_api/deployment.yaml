@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: papi
-  namespace: zppinho
+  namespace: egeeks
 spec:
   replicas: 1
   selector:
@@ -18,19 +18,82 @@ spec:
       containers:
       - name: papi
         image: registry.deti:5000/zppinho/papi:latest
+        imagePullPolicy: Always
+        resources: {}
         ports:
           - containerPort: 8000
-
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: rootpassword
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: user
 # Create Service for APP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: papi
-  namespace: zppinho
+  namespace: egeeks
 spec:
   ports:
   - port: 8000
     targetPort: 8000
   selector:
     app: papi
+
+
+#Configure Traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: papi-k3s
+  namespace: egeeks
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    #traefik.ingress.kubernetes.io/router.middlewares: zppinho-midheader@kubernetescrd
+    traefik.ingress.kubernetes.io/frontend-entry-points: https,http
+    #traefik.ingress.kubernetes.io/redirect-entry-point: http
+    #ingress.kubernetes.io/enable-cors: "true"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/enable-cors: "true"
+    traefik.ingress.kubernetes.io/cors-origins: "*"
+    #traefik.ingress.kubernetes.io/cors-credentials: "true"
+    #traefik.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
+    #ingress.kubernetes.io/whitelist-x-forwarded-for: "true" 
+    traefik.ingress.kubernetes.io/custom-request-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT||Access-Control-Allow-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||Access-Control-Expose-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||auth:* *"
+    traefik.ingress.kubernetes.io/custom-response-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT||Access-Control-Allow-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||Access-Control-Expose-Headers:access-control-allow-credentials,access-control-allow-headers,access-control-allow-origin,auth,content-type||auth:* *"
+spec:
+  rules:
+  - host: zppinho-papi.egs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: papi
+            port: 
+              number: 8000
+  tls:
+  - hosts:
+    - zppinho-papi.egs
+    - zppinho-preact.egs
+    - hugom.egs
+    secretName: whoami-secret

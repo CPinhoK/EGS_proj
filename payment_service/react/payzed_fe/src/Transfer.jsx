@@ -9,6 +9,9 @@ const headers = {
   'Content-Type': 'application/json',
   'accept': 'application/json',
   'auth':'',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Request-Headers': '*',
 }
 
 function Transfer() {
@@ -16,7 +19,7 @@ function Transfer() {
   const [walletid2,setwalletid2]= useState(null);
   const [walletid,setwalletid]= useState(null);
   const [cash,setcash]= useState(null);
-  const [final_url,setfinal_url]= useState('http://localhost:8000/wallet');
+  const [final_url,setfinal_url]= useState('//zppinho-papi.egs/wallet');
   const [cookies] = useCookies(['auth'])
 
   const getData_id = (val) =>{
@@ -36,7 +39,7 @@ function Transfer() {
     console.log(walletid);
     readcookiesandset();
     if(walletid!=null && walletid.length>0){
-      setfinal_url('http://localhost:8000/transaction?from_wallet_id='+walletid+'&to_wallet_id='+walletid2+'&ammount='+cash);
+      setfinal_url('//zppinho-papi.egs/transaction?from_wallet_id='+walletid+'&to_wallet_id='+walletid2+'&ammount='+cash);
     }
     setdisplayflag(!displayflag)
     console.log(displayflag)
@@ -68,4 +71,4 @@ function Transfer() {
 }
 
 export default Transfer;
-//<Message url='http://localhost:8000/wallet'/>
+//<Message url='//zppinho-papi.egs/wallet'/>

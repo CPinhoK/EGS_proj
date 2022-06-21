@@ -11,25 +11,32 @@ const headers = {
   'Content-Type': 'application/json',
   'accept': 'application/json',
   'auth':'',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Request-Headers': '*',
 }
 
 const sapiCall = {
   incoming_paymentid:"hey",
-  totaltopay: 0.0,
+  totaltopay: 1.3,
   metodo_de_pagamento: null,
   source: null,
   payment_desc: null,
   timestamp_recv: null,
 };
+
+
+
 //var displayflag=false
 //const data_recv=null
 function Payment() {
+  console.log("b")
   const [displayflag,setdisplayflag]= useState(false);
   const [apiCall,setApicall]= useState(sapiCall);
   const [walletid,setwalletid]= useState(null);
-  const [final_url,setfinal_url]= useState('http://localhost:8000/payment?wallet_id=');
+  const [final_url,setfinal_url]= useState('//zppinho-papi.egs/payment?wallet_id=');
   const [cookies] = useCookies(['auth'])
-  setApicall(sapiCall)
+  
   
   const getData_id = (val) =>{
     setwalletid(val.target.value);
@@ -42,11 +49,14 @@ function Payment() {
     setfinal_url(final_url+walletid)
     setdisplayflag(!displayflag)
     console.log(displayflag)
+    setApicall(sapiCall)
   }
   var readcookiesandset = () =>{
     headers.auth=cookies.auth
     console.log(headers)
   }
+  console.log("c")
+  
   return (
     <div className="mycontainer">
         <Header/>
@@ -65,7 +75,8 @@ function Payment() {
 
     </div>
   );
+
 }
 
 export default Payment;
-//<Message url='http://localhost:8000/wallet'/>
+//<Message url='//zppinho-papi.egs/wallet'/>
