@@ -265,26 +265,16 @@ async def authenticate(uid:str,token:str):
     # if(uid=="notvalid" or token=="notvalid"):
     #     return 1 
     # return 0
-    # api-endpoint
-    URL = "http://hugom.egs/login"
-    
-    r = requests.get(URL)
-    
-    if r.status_code == 200 or r.status_code == 201:
-        print('Success!')
-    elif r.status_code == 404:
-        print('Not Found.')
-        return 1
+    # api-endpoin
 
     URL = "http://hugom.egs/status"
     # defining a params dict for the parameters to be sent to the API
-    PARAMS = {'token':token}
+    DATA = {'token':token}
     
     # sending get request and saving the response as response object
-    r = requests.get(url = URL, params = PARAMS)
-    
+    rr = requests.get(url = URL, json = DATA)
 
-    if r.status_code == 200 or r.status_code == 201:
+    if rr.status_code == 200 or rr.status_code == 201:
         print('Success!')
         return 0
     

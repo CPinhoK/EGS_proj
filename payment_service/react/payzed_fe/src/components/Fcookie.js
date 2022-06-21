@@ -1,26 +1,13 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect} from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from "react-router-dom";
 
-import axios from 'axios';
 
-
-
-const sapiCall = {
-  redirectUrl: '//zppinho-preact.egs/params/',
-};
 
 
 export default function F_cookie() {
   const [cookies] = useCookies(['auth'])
   const navigate = useNavigate();
-  const headers = {
-    'Content-Type': 'application/json',
-    'accept': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': '*',
-    'Access-Control-Request-Headers': '*',
-  }
   //useEffect(() => {console.log("Read Cookie")},[]) 
 
   var  Readcookie = () =>{
@@ -31,10 +18,10 @@ export default function F_cookie() {
     }
   }
   var OnConfirm = async () =>{
-    const[result,setResult] = useState(null);
+    //const[result,setResult] = useState(null);
     useEffect(() => {
       console.log("login");
-      //window.location.href='//zppinho-auth.egs/login';
+      window.location.href='http://hugom.egs/login?redirectUrl='+window.location.host+'/params/';
       // const message = async () =>{
       //   try{
       //       let res = await axios.get('http://127.0.0.1:8006/login');

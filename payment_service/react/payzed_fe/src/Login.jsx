@@ -13,9 +13,10 @@ export default function Login() {
       let x = window.location.pathname
       console.log(x)
       x=x.split("_")
+      console.log(x[0])
       console.log(x[1])
-      let token = x[1]
-      let user = x[3]
+      let token = x[0].replace('/params/','')
+      let user = x[1]
 
       let expires = new Date();
       let h = 1 // 1 hour 

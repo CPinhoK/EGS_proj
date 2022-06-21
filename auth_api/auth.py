@@ -23,6 +23,8 @@ TOKEN_TEST = 'DAiQRA9tuKJzVq3AsR69g8KvBokaU6XrRIMMXP45KUS3jJSMUKFYsByHMo6NOQ8X'
 
 ### Database
 
+##DATABASE_URL = "sqlite:///./test.db"
+
 DATABASE_URL = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@auth-db:3306/{os.getenv('MYSQL_DATABASE')}"
 
 database = databases.Database(DATABASE_URL)
@@ -44,6 +46,8 @@ engine = sqlalchemy.create_engine(
 )
 metadata.create_all(engine)
 
+
+global redirectUrl
 
 ## Models
 
@@ -131,7 +135,9 @@ def runApi():
 
     @app.get('/login')
     def loginPage():
-        redirectUrl = ''
+        global redirectUrl
+        redirectUrl = 'https://'+str(request.args.get('redirectUrl'))
+        print(redirectUrl)
         try:
             d = str(request.data.decode('utf-8'))
             data = json.loads(d)
@@ -142,7 +148,7 @@ def runApi():
             pass
         if redirectUrl == None or redirectUrl == '':
             redirectUrl = str(request.environ['REMOTE_ADDR'])
-        if TEST: redirectUrl = 'test.url'
+        #if TEST: redirectUrl = 'test.url'
         return render_template('login.html', result = redirectUrl)
 
     @app.post('/login')
@@ -154,12 +160,12 @@ def runApi():
                     print("key: {0}, value: {1}".format(key, value))
                     if key == 'username': u = value
                     if key == 'password': p = value
-                    if key == 'redirectUrl': redirectUrl = value
+                    #if key == 'redirectUrl': redirectUrl = value
             except:
                 response = redirect('/login', 400)
                 return response
             await database.connect()
-            select_query = accounts_t.select().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == redirectUrl)
+            select_query = accounts_t.select().where(accounts_t.c.username == u, accounts_t.c.password == p)
             select_response = await database.fetch_all(select_query)
             if len(select_response) < 1:
                 await database.disconnect()
@@ -167,17 +173,20 @@ def runApi():
                 return response
             t = generateRandom()
             ts = str(time.asctime(time.localtime(time.time())))
-            update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == redirectUrl).values(token = t, timestamp = ts)
+            update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p).values(token = t, timestamp = ts)
             await database.execute(update_query)
-            await database.disconnect()
-            redirectUrl = 'https://'+redirectUrl
-            response = redirect(redirectUrl, 201)
+            #await database.disconnect()
+            global redirectUrl
+            print(redirectUrl)
+            redirectUrl = redirectUrl+t+'_'+u
+            print(redirectUrl)
+            response = redirect(redirectUrl, 302)
             response.headers['token'] = t
             response.headers['username'] = u
             # headers = 'token_' + t + '_user_'+u
             return response
         except:
-            response = redirect('/login', 500)
+            response = redirect('/login', 303)
             try:
                 await database.disconnect()
             except:
@@ -223,17 +232,23 @@ def runApi():
 
     @app.get('/status')
     async def status():
+        print("\n\n"+str( request.get_data() ))
+        print("\n\n"+str(request.json))
         try:
             t = ''
             try:
                 d = str(request.data.decode('utf-8'))
                 data = json.loads(d)
                 t = data['token']
+                print(str(data))
+                print(t)
             except:
                 return Response(status = 400)
             await database.connect()
             select_query = accounts_t.select().where(accounts_t.c.token == t)
             select_response = await database.fetch_all(select_query)
+            print(select_response)
+            print(t)
             if len(select_response) < 1:
                 response = {'token' : ''}
                 await database.disconnect()
