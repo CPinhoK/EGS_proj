@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from . import forms
 import requests
+import json
 
 #import requests, order, orderItem
 #from frontend.egs.server.models import orderItem
@@ -26,9 +27,12 @@ def productssearch(request):
     #query está vazia
     else:
         print("FORM VALID query: " , searchquery)
-        object_list = list(filter(lambda product: searchquery in product, products))
-        print("Object list: ", object_list)
-        return render(request, 'search.html', {'products': object_list})
+        # object_list = list(filter(lambda product: searchquery in product, products))
+        temp = json.dumps(products)
+        object_list = json.loads(temp)
+        output_dict = [product for product in object_list if product['name']==('searchquery')]
+        print("Object list: ", output_dict)
+        return render(request, 'search.html', {'products': output_dict})
 
 def item(request, product_id):
     request.POST.get('product_id')
@@ -37,9 +41,59 @@ def item(request, product_id):
     print(product)
     return render(request, 'item.html', {'product': product})
 
-def addproduct(request):
+#pagina adicionar produto
+def addproductpage(request):
+    print("PAGINA ADD PRODUTO")
     return render(request, 'addproduct.html')
+
+    
+def addproductform(request):
+    print("FORM ADICIONAR PRODUTO")
+    try:
+        nameproduct = ''
+        priceproduct = ''
+        imageproduct = ''
+        categoryproduct = ''
+        statusproduct = ''
+        form = forms.AddProductForm(request.POST or None)
+        #print(form)
+        if form.is_valid():
+            print(" Form is valid")
+            nameproduct = form.changed_data.get(nameproduct)
+            print(nameproduct)
+            priceproduct = form.changed_data.get(priceproduct)
+            imageproduct = ''
+            categoryproduct = form.changed_data.get(categoryproduct)
+            statusproduct = form.changed_data.get(statusproduct)
+            addproductrequest(nameproduct,priceproduct,imageproduct,categoryproduct,statusproduct)
+            print(addproductrequest)
+        context = {'form': form, 'nameproduct': nameproduct, 'priceproduct': priceproduct, 'imageproduct': imageproduct, 'categoryproduct': categoryproduct, 'statusproduct': statusproduct}
+        return render(request, 'addedproduct.html', context) 
+    except:
+        print("API stock not working")
+        return render(request,'notworking.html')
+
+#pedido adicionar produto
+def addproductrequest(self, nameproduct=None, priceproduct=None, imageproduct=None, categoryproduct=None, statusproduct=None):
+    print("REQUEST ADICIONAR PRODUTO")
+    url = 'http://127.0.0.1:8000/products/'
+    headers={ "accept": "*/*",
+              "Content-Tyoe": "application/json"}
+    data ={ "nameproduct": nameproduct,
+            "priceproduct" : priceproduct,
+            "imageproduct" : imageproduct,
+            "categoryproduct" : categoryproduct,
+            "statusproduct" :statusproduct
+    }
+    addproductreq = requests.post(url,data=json.dumps(data), headers=headers)
+    print("API request status code:")
+    print(addproductreq.status_code)
+    print("API request details:")
+    print(addproductreq)
+    return addproductreq.json()
         
+def checkout(request):
+    return render(request, 'checkout.html')
 
 # def addtocart(request,slug):
 #     item = get_object_or_404(item, slug=slug)

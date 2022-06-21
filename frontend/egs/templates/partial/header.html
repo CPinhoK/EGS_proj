@@ -13,8 +13,7 @@
                 <li><a href="#"><i class="fa fa-map-marker"></i> 3810 Aveiro</a></li>
             </ul>
             <ul class="header-links pull-right">
-                <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-                <li><a href="http://127.0.0.1:5000/login"><i class="fa fa-user-o"></i> My Account</a></li>
+                <li><a href="http://192.168.55.165:5000/login"><i class="fa fa-user-o"></i> My Account</a></li>
             </ul>
         </div>
     </div>
@@ -40,18 +39,6 @@
                 <div class="col-md-7">
                     <div class="header-search">
                         <form method="GET" action="{% url 'search' %}">
-                            <!--
-                            <select class="input-select" style="width: 290px;">
-                                <option value="0">All Categories</option>
-                                <option value="1">Antivirus & Security</option>
-                                <option value="2">Bussiness & Office</option>
-                                <option value="3">Education & Reference</option>
-                                <option value="4">Music</option>
-                                <option value="5">Networking & Servers</option>
-                                <option value="6">Operating Systems</option>
-                                <option value="7">Programming & Web Development</option>
-                            </select>                         
-                           -->
                             <input class="input" placeholder="Search here" style="width: 270px;" name="querysearch">
                             <button class="search-btn">Search</button>
                         </form>
@@ -98,8 +85,7 @@
                                     <h5>SUBTOTAL: $2940.00</h5>
                                 </div>
                                 <div class="cart-btns">
-                                    <a href="#">View Cart</a>
-                                    <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a href="{% url 'checkout' %}">Checkout  <i class="fa fa-arrow-circle-right" style="width: max-width;"></i></a>
                                 </div>
                             </div>
                         </div>

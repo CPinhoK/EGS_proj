@@ -1,4 +1,4 @@
-#!/home/spiders17/Desktop/MarianaPinto/UNI/4ano/2semestre/EGS/EGS_proj/frontend/venv/bin/python
+#!/home/spiders17/Desktop/MarianaPinto/UNI/4ano/2semestre/EGS/EGS_proj/frontend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -1,0 +1,62 @@
+# Create App deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: spiders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: registry.deti:5000/spiders/frontend
+        ports:
+          - containerPort: 7000
+
+          
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: spiders
+spec:
+  ports:
+  - port: 8080
+    targetPort: 7000
+  selector:
+    app: frontend
+
+# Configure Traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-k3s
+  namespace: spiders
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+spec:
+  rules:
+  - host: spiders-frontend.egs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port: 
+              number: 8080
