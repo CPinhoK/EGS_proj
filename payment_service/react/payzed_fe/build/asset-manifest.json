@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.578b2139.css",
+    "main.js": "/static/js/main.ff633a3d.js",
+    "static/js/787.b2932479.chunk.js": "/static/js/787.b2932479.chunk.js",
+    "service-worker.js": "/service-worker.js",
+    "static/media/ewallet.png": "/static/media/ewallet.75131726450bb06bd387.png",
+    "index.html": "/index.html",
+    "main.578b2139.css.map": "/static/css/main.578b2139.css.map",
+    "main.ff633a3d.js.map": "/static/js/main.ff633a3d.js.map",
+    "787.b2932479.chunk.js.map": "/static/js/787.b2932479.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.578b2139.css",
+    "static/js/main.ff633a3d.js"
+  ]
+}
