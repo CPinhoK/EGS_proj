@@ -1,0 +1,67 @@
+{% extends "base.html"%}
+{% load static %}
+{% block content %} 
+<div class="section">
+	<!-- container -->
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+			<div class="col-md-7">
+				<!-- Billing Details -->
+				<div class="billing-details">
+					<div class="section-title">
+						<h3 class="title">Delete a product</h3>
+					</div>
+					<div class="row">
+						{% if products|length == 0 %}
+						<!-- SECTION -->
+						<div class="section">
+							<!-- container -->
+							<div class="container">
+								<!-- row -->
+								<div class="row">
+									<h3 class="title">No available Products, please search something else</h3>
+								</div>
+								<!-- /row -->
+							</div>
+							<!-- /container -->
+						</div>
+						<!-- /SECTION -->
+						{% endif %}
+		
+						<!-- store products -->
+						<!-- product -->
+						{% if products|length > 0 %}
+						{% for product in products %}
+						<div class="col-md-4 col-xs-6">
+							<div class="product">
+								<div class="product-body">
+									<p class="product-category">{{product.category.name}}</p>
+									<h3 class="product-name"><a href="{% url 'item' product.id %}" id="page_product">id:{{product.id}} - name:{{product.name}}</a></h3>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+						{% endif %}
+						<!-- /product -->
+		
+						<!-- /store products -->
+					</div>
+					<!-- /STORE -->
+				</div>
+					<form method="post" action="/deletedproduct">
+						{% csrf_token %}
+						<div class="form-group">
+							<input class="input" type="text" name="idproduct" placeholder="Id Product" value="{{form.idproduct}}">
+						</div>
+						<div class="form-group">
+							<input type="submit" placeholder="submit product">
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include "partial/newsletter.html" %}
+{% endblock %}

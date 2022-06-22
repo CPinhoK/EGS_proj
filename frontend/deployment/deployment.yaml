@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  namespace: spiders
+  namespace: egeeks
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: registry.deti:5000/spiders/frontend
+        image: registry.deti:5000/spiders/frontend:latest
         ports:
           - containerPort: 7000
 
@@ -28,7 +28,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend
-  namespace: spiders
+  namespace: egeeks
 spec:
   ports:
   - port: 8080
@@ -42,7 +42,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: frontend-k3s
-  namespace: spiders
+  namespace: egeeks
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/frontend-entry-points: http,https

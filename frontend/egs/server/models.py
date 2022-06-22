@@ -22,8 +22,8 @@ from django.db import models
 # # Each cart item
 # class orderItem(models.Model):
 #     product = models.IntegerField(blank=False)
+#     price = models.DecimalField(default=0.00)
 #     quantity = models.IntegerField(default=1)
-
 #     def __str__(self):
 #         return self.product
 
