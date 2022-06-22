@@ -96,13 +96,13 @@ class Article(BaseModel):
 
 
 # Create Database
-database = [
-    Product(id=1, name="product_test1", price=1.99, image=None, category=1, status=Status.in_stock),
-    Product(id=2, name="product_test2", price=2.99, image=None, category=2, status=Status.out_stock),
-    Article(id=1, product_id=1, key="A1B2C3"),
-    Article(id=2, product_id=2, key="Z0X9Y8"),
-    Article(id=3, product_id=2, key="Z0X9Y8")
-]
+# database = [
+#     Product(id=1, name="product_test1", price=1.99, image=None, category=1, status=Status.in_stock),
+#     Product(id=2, name="product_test2", price=2.99, image=None, category=2, status=Status.out_stock),
+#     Article(id=1, product_id=1, key="A1B2C3"),
+#     Article(id=2, product_id=2, key="Z0X9Y8"),
+#     Article(id=3, product_id=2, key="Z0X9Y8")
+# ]
 
 ## Methods:
 @app.on_event("startup")
@@ -482,7 +482,7 @@ async def delete_category(id: int, response: Response):
         return {"Status": 200, "Message": "Category with id: " + str(id) + " was deleted!"}
 
 # Requires pip install python-multipart
-@app.post("/Image/{id}")
+@app.post("/image/{id}")
 async def upload_image(id: int, response: Response, file: bytes = File(...)):
     name = str(uuid.uuid4())
     url = 'www/images/' + name + ".png"
@@ -532,7 +532,7 @@ async def upload_image(id: int, response: Response, file: bytes = File(...)):
     # return {"Status": 404, "Message": "This Product was not found!"}
 
 
-@app.put("/Image/{id}")
+@app.put("/image/{id}")
 async def update_image(id: int, response: Response, file: bytes = File(...)):
     name = str(uuid.uuid4())
     url = 'www/images/' + name + ".png"
@@ -580,7 +580,7 @@ async def update_image(id: int, response: Response, file: bytes = File(...)):
     # return {"Status": 404, "Message": "This Product was not found!"}
 
 
-@app.delete("/Image/{id}")
+@app.delete("/image/{id}")
 async def delete_image(id: int, response: Response):
     test_query = products.select().where(products.c.id == id)
     test_list = await sql_database.fetch_all(test_query)
@@ -606,7 +606,7 @@ async def delete_image(id: int, response: Response):
         return {"Status": 200, "Message": "Image for product with id: " + str(id) + " was deleted!"}
 
 
-@app.get("/Image/{id}")
+@app.get("/image/{id}")
 async def get_image(id: int, response: Response):
     test_query = products.select().where(products.c.id == id)
     test_list = await sql_database.fetch_all(test_query)
