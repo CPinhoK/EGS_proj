@@ -13,10 +13,9 @@
                 <li><a href="#"><i class="fa fa-map-marker"></i> 3810 Aveiro</a></li>
             </ul>
             <ul class="header-links pull-right">
-                <li><a href="http://hugom.egs/login?redirectUrl=//spiders-frontend.egs/"><i class="fa fa-user-o"></i> Log In velho</a></li>
                 <li><a href="{% url 'login' %}"><i class="fa fa-user-o"></i> Log In</a></li>
-                <li><a href="http://hugom.egs/signup?redirectUrl=//spiders-frontend.egs/"><i class="fa fa-user-o"></i> Sign Up</a></li>
-                <li><a href="http://hugom.egs/update?redirectUrl=//spiders-frontend.egs/&token="><i class="fa fa-user-o"></i>Update</a></li>
+                <li><a href="{% url 'signup' %}"><i class="fa fa-user-o"></i> Sign Up</a></li>
+                <li><a href="{% url 'updateuser' %}"><i class="fa fa-user-o"></i>Update</a></li>
             </ul>
         </div>
     </div>

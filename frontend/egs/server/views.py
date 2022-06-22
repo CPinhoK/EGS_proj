@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from . import forms
 import requests
 import json
@@ -7,12 +7,15 @@ import json
 #from frontend.egs.server.models import orderItem
 
 # Create your views here.
-
 ##############
 # Index page #
 ##############
 def index(request):
     try:
+        token = request.GET.get('token')
+        user = request.GET.get('user')
+        print("token: ", token)
+        print("user: ", user)
         products = requests.get('http://tista-stockapi.egs/products').json()
         print(products)
         if(products!= []):
@@ -171,9 +174,34 @@ def checkout(request):
 ###############
 def login(request):
     url="http://hugom.egs/login?redirectUrl=//spiders-frontend.egs/"
-    response = requests.get(url)
+    responsepost = requests.get("http://hugom.egs/login?redirectUrl=//spiders-frontend.egs/")
+    headerslog = responsepost.headers
+    print("headerslog: ",headerslog)
+    response = redirect(url)
     print(response)
-    return render(request, 'index.html')
+    return response
+
+###############
+# signup data #
+###############
+def signup(request):
+    url="http://hugom.egs/signup?redirectUrl=//spiders-frontend.egs/"
+    response = redirect(url)
+    print(response)
+    return response
+
+def signedup(request):
+    return 
+
+###############
+# update user #
+###############
+def updateuser(request):
+    url="http://hugom.egs/login?redirectUrl=//spiders-frontend.egs/"
+    response = redirect(url)
+    print(response)
+    return response
+
 
 #####################
 # adicionar ao cart #
