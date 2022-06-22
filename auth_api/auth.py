@@ -16,7 +16,7 @@ from sqlalchemy.orm import sessionmaker
 import os
 import asyncio
 
-TEST = True
+TEST = False
 TOKEN_SIZE = 64
 TOKEN_TEST = 'DAiQRA9tuKJzVq3AsR69g8KvBokaU6XrRIMMXP45KUS3jJSMUKFYsByHMo6NOQ8X'
 
@@ -78,14 +78,13 @@ def runApi():
     def signupPage():
         redirectUrl = ''
         try:
-            d = str(request.data.decode('utf-8'))
-            data = json.loads(d)
-            redirectUrl = data['redirectUrl']
+            # d = str(request.data.decode('utf-8'))
+            # data = json.loads(d)
+            # redirectUrl = data['redirectUrl']
             #redirectUrl=request.headers.get('Referer')
+            redirectUrl = str(request.args.get('redirectUrl'))
         except:
             # return Response(status=500)
-            pass
-        if redirectUrl == None or redirectUrl == '':
             redirectUrl = str(request.environ['REMOTE_ADDR'])
         if TEST: redirectUrl = 'test.url'
         return render_template('signup.html', result = redirectUrl)
@@ -93,7 +92,7 @@ def runApi():
     @app.post('/signup')
     async def signup():
         try:
-            u = p = redirectUrl = ''
+            u = p = w = redirectUrl = ''
             try:
                 for key, value in request.form.items():
                     print("key: {0}, value: {1}".format(key, value))
@@ -106,18 +105,19 @@ def runApi():
             t = generateRandom()
             ts = str(time.asctime(time.localtime(time.time())))
             await database.connect()
-            select_query = accounts_t.select().where(accounts_t.c.username == u, accounts_t.c.website == redirectUrl)
+            w = redirectUrl.split('/')[2]
+            select_query = accounts_t.select().where(accounts_t.c.username == u, accounts_t.c.website == w)
             select_response = await database.fetch_all(select_query)
             if len(select_response) > 0:
                 await database.disconnect()
                 response = redirect('/signup', 409)
                 return response
                 # return render_template('signup.html', result = redirectUrl)
-            insert_query = accounts_t.insert().values(username=u, password=p, website=redirectUrl, token = t, timestamp = ts)
+            insert_query = accounts_t.insert().values(username=u, password=p, website=w, token = t, timestamp = ts)
             await database.execute(insert_query)
             await database.disconnect()
-            redirectUrl = 'https://'+redirectUrl
-            response = redirect(redirectUrl, 201)
+            redirectUrl = 'https://'+redirectUrl+'?token='+t+'&user='+u
+            response = redirect(redirectUrl, 302)
             response.headers['token'] = t
             response.headers['username'] = u
             return response
@@ -133,14 +133,13 @@ def runApi():
     def loginPage():
         redirectUrl = ''
         try:
-            d = str(request.data.decode('utf-8'))
-            data = json.loads(d)
-            redirectUrl = data['redirectUrl']
+            # d = str(request.data.decode('utf-8'))
+            # data = json.loads(d)
+            # redirectUrl = data['redirectUrl']
             #redirectUrl=request.headers.get('Referer')
+            redirectUrl = str(request.args.get('redirectUrl'))
         except:
             # return Response(status=500)
-            pass
-        if redirectUrl == None or redirectUrl == '':
             redirectUrl = str(request.environ['REMOTE_ADDR'])
         if TEST: redirectUrl = 'test.url'
         return render_template('login.html', result = redirectUrl)
@@ -148,7 +147,7 @@ def runApi():
     @app.post('/login')
     async def login():
         try:
-            u = p = ''
+            redirectUrl = u = p = w = ''
             try:
                 for key, value in request.form.items():
                     print("key: {0}, value: {1}".format(key, value))
@@ -159,7 +158,8 @@ def runApi():
                 response = redirect('/login', 400)
                 return response
             await database.connect()
-            select_query = accounts_t.select().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == redirectUrl)
+            w = redirectUrl.split('/')[2]
+            select_query = accounts_t.select().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == w)
             select_response = await database.fetch_all(select_query)
             if len(select_response) < 1:
                 await database.disconnect()
@@ -167,14 +167,13 @@ def runApi():
                 return response
             t = generateRandom()
             ts = str(time.asctime(time.localtime(time.time())))
-            update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == redirectUrl).values(token = t, timestamp = ts)
+            update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == w).values(token = t, timestamp = ts)
             await database.execute(update_query)
             await database.disconnect()
-            redirectUrl = 'https://'+redirectUrl
-            response = redirect(redirectUrl, 201)
+            redirectUrl = 'https://'+redirectUrl+'?token='+t+'&user='+u
+            response = redirect(redirectUrl, 302)
             response.headers['token'] = t
             response.headers['username'] = u
-            # headers = 'token_' + t + '_user_'+u
             return response
         except:
             response = redirect('/login', 500)
@@ -192,8 +191,9 @@ def runApi():
                 d = str(request.data.decode('utf-8'))
                 data = json.loads(d)
                 u = data['username']
-                w = data['website']
-                if w == None or w == '':
+                try:
+                    w = data['website']
+                except:
                     w = str(request.environ['REMOTE_ADDR'])
                 if TEST: w = 'test.url'
             except:
@@ -206,14 +206,10 @@ def runApi():
                 await database.execute(update_query)
             except:
                 await database.disconnect()
-                w = 'https://'+w
-                # return redirect(w, 403)
                 return Response(status = 403)
             await database.disconnect()
-            # return redirect(w, 201)
             return Response(status = 201)
         except:
-            # response = redirect(w, 500)
             response = Response(status = 500)
             try:
                 await database.disconnect()
@@ -242,7 +238,6 @@ def runApi():
             await database.disconnect()
             return Response(json.dumps(response), 201)
         except:
-            # response = redirect(w, 500)
             response = Response(status = 500)
             try:
                 await database.disconnect()
@@ -254,41 +249,43 @@ def runApi():
     async def updatePage():
         redirectUrl = t = u = p = ''
         try:
-            d = str(request.data.decode('utf-8'))
-            data = json.loads(d)
-            redirectUrl = data['redirectUrl']
-            t = data['token']
+            # d = str(request.data.decode('utf-8'))
+            # data = json.loads(d)
+            # redirectUrl = data['redirectUrl']
+            # t = data['token']
             #redirectUrl=request.headers.get('Referer')
+            try:
+                redirectUrl = str(request.args.get('redirectUrl'))#
+            except:
+                redirectUrl = str(request.environ['REMOTE_ADDR'])
+            t = str(request.args.get('token'))
         except:
-            # return Response(status=500)
-            pass
-        if redirectUrl == None or redirectUrl == '':
-            redirectUrl = str(request.environ['REMOTE_ADDR'])
+            return redirect('https://'+redirectUrl, 400)
         if TEST: 
             redirectUrl = 'test.url'
             t = TOKEN_TEST
         await database.connect()
-        # try:
-        select_query = accounts_t.select().where(accounts_t.c.token == t)
-        select_response = await database.fetch_all(select_query)
-        if len(select_response) == 1:
-            u = select_response[0][0]
-            p = select_response[0][1]
-        else:
+        try:
+            select_query = accounts_t.select().where(accounts_t.c.token == t)
+            select_response = await database.fetch_all(select_query)
+            if len(select_response) == 1:
+                u = select_response[0][0]
+                p = select_response[0][1]
+            else:
+                await database.disconnect()
+                redirectUrl = 'https://'+redirectUrl
+                return redirect(redirectUrl, 402)
+        except:
             await database.disconnect()
             redirectUrl = 'https://'+redirectUrl
-            return redirect(redirectUrl, 402)
-        # except:
-        #     await database.disconnect()
-        #     redirectUrl = 'https://'+redirectUrl
-        #     return redirect(redirectUrl, 403)
+            return redirect(redirectUrl, 403)
         await database.disconnect()
         return render_template('edit.html', url = redirectUrl, username = u, password = p)
 
     @app.post('/update')
     async def update():
         try:
-            u = p = nu = np = redirectUrl = ''
+            u = p = nu = np = redirectUrl = w = ''
             try:
                 for key, value in request.form.items():
                     if key == 'username': u = value
@@ -300,12 +297,13 @@ def runApi():
                 return Response(status = 400)
             await database.connect()
             try:
+                w = redirectUrl.split('/')[2]
                 ts = str(time.asctime(time.localtime(time.time())))
                 if not (np == None or np == ''):
-                    update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == redirectUrl).values(password = np, timestamp = ts)
+                    update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == w).values(password = np, timestamp = ts)
                     await database.execute(update_query)
                 if not (nu == None or nu == ''):
-                    update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == redirectUrl).values(username = nu, timestamp = ts)
+                    update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == w).values(username = nu, timestamp = ts)
                     await database.execute(update_query)
             except:
                 await database.disconnect()
