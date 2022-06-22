@@ -27,7 +27,7 @@ export default function Logout() {
         try{
             let user=cookies.auth
             user=user.split(' ')[0]
-            let inc_data={'user':user};
+            let inc_data={'username':user,'website':window.location.host};
             let res = await axios.post(url, inc_data, {
                 headers: headers
               })
