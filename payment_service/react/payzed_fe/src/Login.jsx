@@ -20,7 +20,7 @@ export default function Login() {
 
       var url = window.location.href;
       var token =url.substring(url.lastIndexOf('/')+1);
-      token=token.split('=')[1];
+      token=token.split('=')[1].split('&')[0];
       console.log(token);
 
       let expires = new Date();

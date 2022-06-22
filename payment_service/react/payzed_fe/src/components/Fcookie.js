@@ -20,7 +20,7 @@ export default function F_cookie() {
     useEffect(() => {
       console.log("login");
       //it would really help to send headers here 
-      window.location.replace('http://127.0.0.1:8006/login?redirectUrl='+window.location.host+'/params/');
+      window.location.replace('http://127.0.0.1:8006/login?redirectUrl=https://'+window.location.host+'/params/');
       //window.location.href='http://hugom.egs/login?redirectUrl='+window.location.host+'/params/';
       // const message = async () =>{
       //   try{

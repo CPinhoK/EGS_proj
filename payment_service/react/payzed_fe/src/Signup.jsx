@@ -10,7 +10,7 @@ export default function Signup() {
         useEffect(() => {
           console.log("Signup");
           //it would really help to send headers here 
-          window.location.replace('http://hugom.egs/signup?redirectUrl='+window.location.host+'/params/');
+          window.location.replace('http://hugom.egs/signup?redirectUrl=https://'+window.location.host+'/params/');
           //window.location.replace('https://www.google.pt/search?q=HERE BE DRAGONS');
           //window.location.href='http://hugom.egs/Sign?redirectUrl='+window.location.host+'/params/';
 
