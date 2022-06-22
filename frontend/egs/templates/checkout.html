@@ -44,11 +44,11 @@
 							<input type="checkbox" id="create-account">
 							<label for="create-account">
 								<span></span>
-								Create Account?
+								I have a wallet?
 							</label>
 							<div class="caption">
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
-								<input class="input" type="password" name="password" placeholder="Enter Your Password">
+								<p>Wallet ID</p>
+								<input class="input" type="password" name="walletid" placeholder="Wallet ID">
 							</div>
 						</div>
 					</div>
@@ -139,7 +139,7 @@
 						I've read and accept the <a href="#">terms & conditions</a>
 					</label>
 				</div>
-				<a href="#" class="primary-btn order-submit">Place order</a>
+				<a href=" {% url 'redirectpaymentapi' %}" class="primary-btn order-submit">Place order</a>
 			</div>
 			<!-- /Order Details -->
 		</div>

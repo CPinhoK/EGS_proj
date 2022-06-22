@@ -166,8 +166,21 @@ def deleteproductrequest(idproduct=None):
 ######################
 # página de checkout #
 ######################   
+# pagina checkout
 def checkout(request):
     return render(request, 'checkout.html')
+
+#pedido pagamento à api
+def pedidopayment(request, wallet_id):
+    print("Pedido pagamento")
+    url = 'https://zppinho-papi.egs/payment?wallet_id=' + wallet_id
+    response = request.post(url)
+    return response
+
+# redirect frontend da pagamento api
+def redirectpaymentapi(request):
+    url = 'http://zppinho-preact.egs/redirect?url=//spiders-frontend.egs/checkout'
+    return redirect(url)
 
 ###############
 # log in data #
@@ -191,7 +204,7 @@ def signup(request):
     return response
 
 def signedup(request):
-    return 
+    pass
 
 ###############
 # update user #
