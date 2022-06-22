@@ -14,6 +14,7 @@ import Payment from './Payment';
 import Login from './Login';
 import Signup from './Signup';
 import Logout from './Logout';
+import Redirect from './Redirect';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import {
@@ -41,6 +42,7 @@ ReactDOM.createRoot(rootNode).render(
         <Route path="/payment" element={<Payment />} />
       </Route>
       <Route path="/params/*" element={<Login />} />
+      <Route path="/redirect/*" element={<Redirect />} />
       <Route path="*" element={<div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}} ><h1 >404 NOT FOUND</h1></div>} />
     </Routes>
   </BrowserRouter>

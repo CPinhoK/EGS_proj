@@ -116,7 +116,10 @@ def runApi():
             insert_query = accounts_t.insert().values(username=u, password=p, website=w, token = t, timestamp = ts)
             await database.execute(insert_query)
             await database.disconnect()
-            redirectUrl = 'https://'+redirectUrl+'?token='+t+'&user='+u
+            if redirectUrl.split('/')[0] == 'https:':
+                redirectUrl = redirectUrl+'?token='+t+'&user='+u
+            else:
+                redirectUrl = 'https://'+redirectUrl+'?token='+t+'&user='+u
             response = redirect(redirectUrl, 302)
             response.headers['token'] = t
             response.headers['username'] = u
@@ -170,7 +173,10 @@ def runApi():
             update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == w).values(token = t, timestamp = ts)
             await database.execute(update_query)
             await database.disconnect()
-            redirectUrl = 'https://'+redirectUrl+'?token='+t+'&user='+u
+            if redirectUrl.split('/')[0] == 'https:':
+                redirectUrl = redirectUrl+'?token='+t+'&user='+u
+            else:
+                redirectUrl = 'https://'+redirectUrl+'?token='+t+'&user='+u
             response = redirect(redirectUrl, 302)
             response.headers['token'] = t
             response.headers['username'] = u
@@ -298,6 +304,8 @@ def runApi():
             await database.connect()
             try:
                 w = redirectUrl.split('/')[2]
+                if w == 'https':
+                    w = redirectUrl.split('//')[0] + '//' + redirectUrl.split('//')[2]
                 ts = str(time.asctime(time.localtime(time.time())))
                 if not (np == None or np == ''):
                     update_query = accounts_t.update().where(accounts_t.c.username == u, accounts_t.c.password == p, accounts_t.c.website == w).values(password = np, timestamp = ts)
@@ -309,7 +317,8 @@ def runApi():
                 await database.disconnect()
                 return Response(status = 403)
             await database.disconnect()
-            redirectUrl = 'https://'+redirectUrl
+            if not redirectUrl.split('/')[0] == 'https:':
+                redirectUrl = 'https://'+redirectUrl
             response = redirect(redirectUrl, 201)
             # headers = 'token_' + t + '_user_'+u
             return response
