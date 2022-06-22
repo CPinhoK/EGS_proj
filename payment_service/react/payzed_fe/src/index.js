@@ -13,6 +13,7 @@ import DeleteWallet from './DeleteWallet';
 import Payment from './Payment';
 import Login from './Login';
 import Signup from './Signup';
+import Logout from './Logout';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import {
@@ -35,6 +36,7 @@ ReactDOM.createRoot(rootNode).render(
       <Route path="/transaction-history" element={<GetPaymentHist />} />
       <Route path="/delete-wallet" element={<DeleteWallet />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/logout" element={<Logout />} />
       <Route element={<ProtectedRoutes />}>
         <Route path="/payment" element={<Payment />} />
       </Route>
