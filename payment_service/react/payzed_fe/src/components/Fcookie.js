@@ -3,8 +3,6 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from "react-router-dom";
 
 
-
-
 export default function F_cookie() {
   const [cookies] = useCookies(['auth'])
   const navigate = useNavigate();
@@ -21,7 +19,9 @@ export default function F_cookie() {
     //const[result,setResult] = useState(null);
     useEffect(() => {
       console.log("login");
-      window.location.href='http://hugom.egs/login?redirectUrl='+window.location.host+'/params/';
+      //it would really help to send headers here 
+      window.location.replace('http://127.0.0.1:8006/login?redirectUrl='+window.location.host+'/params/');
+      //window.location.href='http://hugom.egs/login?redirectUrl='+window.location.host+'/params/';
       // const message = async () =>{
       //   try{
       //       let res = await axios.get('http://127.0.0.1:8006/login');

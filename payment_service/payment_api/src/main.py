@@ -102,7 +102,7 @@ class Wallet_update(BaseModel):
 
 
 
-master_wallet_id="k2G0R6uoKH998wzrd"
+master_wallet_id="EOcI77pC3UG2daoQk"
 
 app = FastAPI()
 

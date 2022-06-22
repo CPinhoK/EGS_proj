@@ -47,6 +47,11 @@ function Navigation() {
                     Delete Wallet
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/signup">
+                    Signup
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>

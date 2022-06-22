@@ -9,19 +9,24 @@ export default function Login() {
   const navigate = useNavigate();
 
     function  SetCoo(){
+      console.log(window.location.pathname)
       console.log( window.location.href)
-      let x = window.location.pathname
-      console.log(x)
-      x=x.split("_")
-      console.log(x[0])
-      console.log(x[1])
-      let token = x[0].replace('/params/','')
-      let user = x[1]
+      const queryString = window.location.href.replace('/params/','');
+      console.log(queryString);
+      const urlParams = new URLSearchParams(queryString);
+      const user = urlParams.get('user')
+      console.log(user);
+      
+
+      var url = window.location.href;
+      var token =url.substring(url.lastIndexOf('/')+1);
+      token=token.split('=')[1];
+      console.log(token);
 
       let expires = new Date();
       let h = 1 // 1 hour 
       expires.setTime(expires.getTime() + (h*60*60*1000) );
-      let authi = user+" "+ token;
+      let authi = user+" "+token;
       console.log(authi)
       setCookie('auth', authi, { path: '/',  expires, sameSite: "none",secure: true});
 
