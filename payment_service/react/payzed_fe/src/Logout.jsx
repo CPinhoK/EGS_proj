@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import Header from './components/Header';
-const url = 'http://hugom.egs/logout'
+const url = 'https://hugom.egs/logout'
 //const url = 'http://127.0.0.1:8006/logout'
 const headers = {
     'Content-Type': 'application/json',
